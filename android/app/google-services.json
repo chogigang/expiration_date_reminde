@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "299718454090",
+    "project_id": "expiration-date-reminde",
+    "storage_bucket": "expiration-date-reminde.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299718454090:android:a9b21fc4d5ac45e1feafb3",
+        "android_client_info": {
+          "package_name": "com.example.expiration_date_reminde"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKvk9Ux6oOtHh5H43vikOG3ER41K6fPEA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
