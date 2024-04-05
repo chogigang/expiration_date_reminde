@@ -9,6 +9,12 @@ firebase_core: ^2.27.0
 
 ## Getting Started
 
+4월 5일 파이어베이스 연동
+3월 25일 카카오 로그인
+3월 26일 바코드 스캔 
+
+
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
