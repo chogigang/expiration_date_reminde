@@ -19,37 +19,45 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         children: [
           const Padding(
-            //임시 로고
+            // 로고
             padding: EdgeInsets.only(top: 30, left: 0, right: 20.0),
             child: Icon(
               Icons.abc,
               size: 200,
-            ), //로고 들어갈 자리
+            ), // 로고 들어갈 자리
           ),
-          Image.network(
-            //카톡 프로필 불러오기
-            viewModel.user?.kakaoAccount?.profile?.profileImageUrl ?? '',
-            width: 200, height: 200,
-          ),
-          Text('${viewModel.isLogined}'),
-          Padding(
-            padding: EdgeInsets.only(top: 100, right: 0.0),
-            child: viewModel.isLogined
-                ? ElevatedButton(
-                    onPressed: () async {
-                      await viewModel.logout();
-                      setState(() {});
-                    },
-                    child: const Text("카카오 로그아웃"),
-                  )
-                : ElevatedButton(
-                    onPressed: () async {
-                      await viewModel.login();
-                      setState(() {});
-                    },
-                    child: const Text("카카오 로그인"),
-                  ),
-          ),
+          if (viewModel.isLogined &&
+              viewModel.user != null) // 로그인되었고 사용자 정보가 있는 경우에만 프로필 이미지 표시
+            Padding(
+              padding: const EdgeInsets.only(top: 30, left: 0, right: 20.0),
+              child: Image.network(
+                viewModel.user!.kakaoAccount!.profile!.profileImageUrl ?? '',
+                width: 200,
+                height: 200,
+              ),
+            ),
+          if (viewModel.isLogined) // 로그인된 경우에만 로그아웃 버튼 표시
+            Padding(
+              padding: const EdgeInsets.only(top: 100, right: 0.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await viewModel.logout();
+                  setState(() {});
+                },
+                child: const Text("카카오 로그아웃"),
+              ),
+            ),
+          if (!viewModel.isLogined) // 로그인되지 않은 경우에만 로그인 버튼 표시
+            Padding(
+              padding: const EdgeInsets.only(top: 100, right: 0.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await viewModel.login();
+                  setState(() {});
+                },
+                child: const Text("카카오 로그인"),
+              ),
+            ),
         ],
       ),
     );
