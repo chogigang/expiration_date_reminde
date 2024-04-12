@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "299718454090",
+    "firebase_url": "https://expiration-date-reminde-default-rtdb.firebaseio.com",
     "project_id": "expiration-date-reminde",
     "storage_bucket": "expiration-date-reminde.appspot.com"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.expiration_date_reminde"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "299718454090-f0tgcerr5b8a6i4gdujc26l3o67fm3i9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.expiration_date_reminde",
+            "certificate_hash": "c89f04144ede4ff2a62a8f3176504c8016ed0f0e"
+          }
+        },
+        {
+          "client_id": "299718454090-68bk603fv0mfkmvivg5k4ghj8gl8ha6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDKvk9Ux6oOtHh5H43vikOG3ER41K6fPEA"
@@ -20,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "299718454090-68bk603fv0mfkmvivg5k4ghj8gl8ha6g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "299718454090-7k1lfl0t6c781hng1pccvhddlie6ukkc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.expirationDateReminde"
+              }
+            }
+          ]
         }
       }
     }

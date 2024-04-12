@@ -1,7 +1,7 @@
 import 'package:expiration_date/login/kakao_login.dart';
 import 'package:expiration_date/login/login_view_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:expiration_date/login/google_login.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -12,6 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final viewModel = LoginViewModel(KakaoLogin());
+  final googleModel = Google_Login();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,10 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           const Padding(
             // 로고
-            padding: EdgeInsets.only(top: 30, left: 0, right: 20.0),
+            padding: EdgeInsets.only(
+              top: 30,
+              left: 0,
+            ),
             child: Icon(
               Icons.abc,
               size: 200,
@@ -58,6 +62,16 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Text("카카오 로그인"),
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20, right: 0.0),
+            child: ElevatedButton(
+              onPressed: () async {
+                await googleModel.signInWithGoogle();
+                setState(() {});
+              },
+              child: const Text("구글 로그인"),
+            ),
+          ),
         ],
       ),
     );

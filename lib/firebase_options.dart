@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '299718454090',
     projectId: 'expiration-date-reminde',
     authDomain: 'expiration-date-reminde.firebaseapp.com',
+    databaseURL: 'https://expiration-date-reminde-default-rtdb.firebaseio.com',
     storageBucket: 'expiration-date-reminde.appspot.com',
     measurementId: 'G-VC2B7JXRMX',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:299718454090:android:a9b21fc4d5ac45e1feafb3',
     messagingSenderId: '299718454090',
     projectId: 'expiration-date-reminde',
+    databaseURL: 'https://expiration-date-reminde-default-rtdb.firebaseio.com',
     storageBucket: 'expiration-date-reminde.appspot.com',
   );
 
@@ -66,7 +68,10 @@ class DefaultFirebaseOptions {
     appId: '1:299718454090:ios:7b0227c884872775feafb3',
     messagingSenderId: '299718454090',
     projectId: 'expiration-date-reminde',
+    databaseURL: 'https://expiration-date-reminde-default-rtdb.firebaseio.com',
     storageBucket: 'expiration-date-reminde.appspot.com',
+    androidClientId: '299718454090-f0tgcerr5b8a6i4gdujc26l3o67fm3i9.apps.googleusercontent.com',
+    iosClientId: '299718454090-7k1lfl0t6c781hng1pccvhddlie6ukkc.apps.googleusercontent.com',
     iosBundleId: 'com.example.expirationDateReminde',
   );
 
@@ -75,7 +80,10 @@ class DefaultFirebaseOptions {
     appId: '1:299718454090:ios:feb64f315f961679feafb3',
     messagingSenderId: '299718454090',
     projectId: 'expiration-date-reminde',
+    databaseURL: 'https://expiration-date-reminde-default-rtdb.firebaseio.com',
     storageBucket: 'expiration-date-reminde.appspot.com',
+    androidClientId: '299718454090-f0tgcerr5b8a6i4gdujc26l3o67fm3i9.apps.googleusercontent.com',
+    iosClientId: '299718454090-sntf0osop79nb2nqulq9gbov9tupe6ku.apps.googleusercontent.com',
     iosBundleId: 'com.example.expirationDateReminde.RunnerTests',
   );
 }
