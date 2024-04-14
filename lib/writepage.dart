@@ -13,6 +13,90 @@ class WritePage extends StatefulWidget {
 class _WritePageState extends State<WritePage> {
   String result = '';
   final productNameController = TextEditingController();
+  final imageUrlController = TextEditingController();
+
+  Future<void> getProduct(String barcode) async {
+    var apiKey = '08250c6f4a19422781f0'; // 여기에 실제 API 키를 입력
+    var url = Uri.parse(
+        'http://openapi.foodsafetykorea.go.kr/api/$apiKey/I2570/json/1/5/BRCD_NO=$barcode');
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      var productName = jsonResponse['I2570']['row'][0]['PRDT_NM'];
+      setState(() {
+        productNameController.text = productName;
+      });
+      fetchImage(productName);
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
+
+  Future<void> fetchImage(String productName) async {
+    var response = await http.get(
+      Uri.parse(
+          'https://www.googleapis.com/customsearch/v1?key=AIzaSyAt7hR9ck1dBV7XBROGd4N6BpiUJmaNxy0&cx=f2032a4cd4efe468e&q=$productName&searchType=image'),
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      setState(() {
+        imageUrlController.text = jsonResponse['items'][0]['link'];
+      });
+      print('Image URL: ${imageUrlController.text}');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+  }
+
+  Widget _buildCircle(
+      Alignment alignment, double size, Color color, Function onPressed) {
+    return Align(
+      alignment: alignment,
+      child: InkWell(
+        onTap: () {
+          onPressed();
+        },
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+            image: DecorationImage(
+              image: NetworkImage(imageUrlController.text),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCircleWithIcon(Alignment alignment, double size, Color color,
+      Function onPressed, IconData icon) {
+    return Align(
+      alignment: alignment,
+      child: InkWell(
+        onTap: () {
+          onPressed();
+        },
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +130,7 @@ class _WritePageState extends State<WritePage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(),
+                  padding: const EdgeInsets.only(),
                   child: TextField(
                     controller: productNameController,
                     decoration: const InputDecoration(
@@ -88,67 +172,6 @@ class _WritePageState extends State<WritePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Future<void> getProduct(String barcode) async {
-    var apiKey = '08250c6f4a19422781f0'; // 여기에 실제 API 키를 입력하세요.
-    var url = Uri.parse(
-        'http://openapi.foodsafetykorea.go.kr/api/$apiKey/I2570/json/1/5/BRCD_NO=$barcode');
-    var response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      var productName = jsonResponse['I2570']['row'][0]['PRDT_NM'];
-      setState(() {
-        productNameController.text = productName;
-      });
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-  }
-
-  Widget _buildCircle(
-      Alignment alignment, double size, Color color, Function onPressed) {
-    return Align(
-      alignment: alignment,
-      child: InkWell(
-        onTap: () {
-          onPressed();
-        },
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCircleWithIcon(Alignment alignment, double size, Color color,
-      Function onPressed, IconData icon) {
-    return Align(
-      alignment: alignment,
-      child: InkWell(
-        onTap: () {
-          onPressed();
-        },
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-          ),
-        ),
       ),
     );
   }
