@@ -11,6 +11,7 @@ class WritePage extends StatefulWidget {
 }
 
 class _WritePageState extends State<WritePage> {
+  //바코드 스캔 api
   String result = '';
   final productNameController = TextEditingController();
   final imageUrlController = TextEditingController();
@@ -34,6 +35,7 @@ class _WritePageState extends State<WritePage> {
   }
 
   Future<void> fetchImage(String productName) async {
+    //이미지 찾는 api
     var response = await http.get(
       Uri.parse(
           'https://www.googleapis.com/customsearch/v1?key=AIzaSyAt7hR9ck1dBV7XBROGd4N6BpiUJmaNxy0&cx=f2032a4cd4efe468e&q=$productName&searchType=image'),
