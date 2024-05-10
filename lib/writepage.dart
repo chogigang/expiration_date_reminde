@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:html/parser.dart' as parser;
 
 class WritePage extends StatefulWidget {
   const WritePage({Key? key}) : super(key: key);
@@ -11,13 +12,12 @@ class WritePage extends StatefulWidget {
 }
 
 class _WritePageState extends State<WritePage> {
-  //바코드 스캔 api
   String result = '';
   final productNameController = TextEditingController();
-  final imageUrlController = TextEditingController();
+  String imageUrl = '';
 
   Future<void> getProduct(String barcode) async {
-    var apiKey = '08250c6f4a19422781f0'; // 여기에 실제 API 키를 입력
+    var apiKey = '08250c6f4a19422781f0';
     var url = Uri.parse(
         'http://openapi.foodsafetykorea.go.kr/api/$apiKey/I2570/json/1/5/BRCD_NO=$barcode');
     var response = await http.get(url);
@@ -28,27 +28,29 @@ class _WritePageState extends State<WritePage> {
       setState(() {
         productNameController.text = productName;
       });
-      fetchImage(productName);
+      fetchGoogleImages(productName);
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
   }
 
-  Future<void> fetchImage(String productName) async {
-    //이미지 찾는 api
-    var response = await http.get(
-      Uri.parse(
-          'https://www.googleapis.com/customsearch/v1?key=AIzaSyAt7hR9ck1dBV7XBROGd4N6BpiUJmaNxy0&cx=f2032a4cd4efe468e&q=$productName&searchType=image'),
-    );
-
+  Future<void> fetchGoogleImages(String keyword) async {
+    final response = await http
+        .get(Uri.parse('https://www.google.com/search?q=$keyword&tbm=isch'));
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      setState(() {
-        imageUrlController.text = jsonResponse['items'][0]['link'];
-      });
-      print('Image URL: ${imageUrlController.text}');
+      final document = parser.parse(response.body);
+      final elements = document.getElementsByTagName('img');
+      final urls = elements
+          .map((element) => element.attributes['src'])
+          .where((src) => src != null && src.startsWith('http'))
+          .toList();
+      if (urls.isNotEmpty) {
+        setState(() {
+          imageUrl = urls.first!;
+        });
+      }
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+      throw Exception('Failed to load images');
     }
   }
 
@@ -66,10 +68,12 @@ class _WritePageState extends State<WritePage> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: color,
-            image: DecorationImage(
-              image: NetworkImage(imageUrlController.text),
-              fit: BoxFit.cover,
-            ),
+            image: imageUrl.isNotEmpty
+                ? DecorationImage(
+                    image: NetworkImage(imageUrl),
+                    fit: BoxFit.cover,
+                  )
+                : null,
           ),
         ),
       ),

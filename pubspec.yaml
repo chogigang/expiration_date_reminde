@@ -44,10 +44,22 @@ dependencies:
   http: ^1.2.1
   html: ^0.15.4
   google_sign_in: ^6.2.1
+  firebase_database: ^10.5.4
+  get_it: ^7.7.0
+  moor: ^4.1.0+1
+  sqlite3_flutter_libs: ^0.5.21
+  path_provider:
+  path:
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  moor_generator: ^4.6.0
+  build_runner: ^2.4.9
+  analyzer: ^4.7.0
+  
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
