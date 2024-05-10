@@ -24,3 +24,4 @@ class MyDatabase extends _$MyDatabase {
 }
 
 //flutter packages pub run build_runner build
+//flutter pub run build_runner build 는 왠지 안먹음 
