@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
@@ -42,14 +40,21 @@ abstract class FooddbView extends View {
 
 @DriftDatabase(tables: [Fooddb], views: [FooddbView])
 class Database extends _$Database {
-  Database() : super(_openConnection());
+  //
+  Database() : super(_openConnection()); //LazyDatabase 객체 입력받기
 
-// 쿼리 구현
+// 쿼리 구현 CRUD
+
+// 조회
   Stream<List<FooddbData>> watchSchedules(DateTime date) =>
       (select(fooddb)..where((tbl) => tbl.expiry_date.equals(date)))
           .watch(); // 데이터를 조회하고 변화를 감지
-  //insert 문
+  //작성 insert 문
   Future<int> createFooddb(FooddbCompanion data) => into(fooddb).insert(data);
+
+  // 업데이트
+  Future<bool> updateFooddb(FooddbCompanion data) =>
+      update(fooddb).replace(data);
 
 // delete문
   Future<int> removeSchedule(int id) =>
@@ -68,7 +73,6 @@ LazyDatabase _openConnection() {
     return NativeDatabase(file);
   });
 }
-
 
 //flutter pub run build_runner build
 //flutter packages pub run build_runner build
