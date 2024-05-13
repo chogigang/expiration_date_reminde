@@ -1,8 +1,10 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:html/parser.dart' as parser;
+import 'package:expiration_date/data/fooddb.dart';
 
 class WritePage extends StatefulWidget {
   const WritePage({Key? key}) : super(key: key);
@@ -14,6 +16,8 @@ class WritePage extends StatefulWidget {
 class _WritePageState extends State<WritePage> {
   String result = '';
   final productNameController = TextEditingController();
+  final expiryDateController = TextEditingController();
+  final alarmCycleController = TextEditingController();
   String imageUrl = '';
 
   Future<void> getProduct(String barcode) async {
@@ -145,32 +149,77 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                     top: 5,
                   ),
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: expiryDateController,
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: '유통기한',
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                     top: 5,
                   ),
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: alarmCycleController,
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: '알람 주기 ',
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 0),
                   child: ElevatedButton(
-                    onPressed: null,
+                    onPressed: () async {
+                      String productName = productNameController.text;
+                      String expiryDate = expiryDateController.text;
+                      String alarmCycle = alarmCycleController.text;
+
+                      Database db = Database();
+                      int? alarmCycleInt = int.tryParse(alarmCycle);
+                      FooddbCompanion newFood = FooddbCompanion.insert(
+                        name: productName,
+                        expiry_date: DateTime.parse(expiryDate),
+                        alarm_cycle: drift.Value(alarmCycleInt),
+                        type: '',
+                      );
+                      int id = await db.createFooddb(newFood); // await 키워드 추가
+
+                      if (id > 0) {
+                        // 데이터가 성공적으로 추가되었는지 확인
+                        print('항목이 성공적으로 추가되었습니다. ID: $id');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('알림'),
+                              content: Text('항목이 성공적으로 추가되었습니다.'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('확인'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        // 데이터 추가 실패
+                        print('항목 추가에 실패했습니다.');
+                      }
+
+                      productNameController.clear();
+                      expiryDateController.clear();
+                      alarmCycleController.clear();
+                    },
                     child: Text("등록하기"),
                   ),
                 ),

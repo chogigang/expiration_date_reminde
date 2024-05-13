@@ -15,7 +15,7 @@ class Fooddb extends Table {
 
   DateTimeColumn get expiry_date => dateTime()(); //유통기한
 
-  IntColumn get alarm_cycle => integer().nullable()(); //알람주기   null 허용
+  IntColumn get alarm_cycle => integer()(); //알람주기   null 허용
 
   DateTimeColumn get createdAt =>
       dateTime().withDefault(Constant(DateTime.now()))(); //현제 시간 기록
