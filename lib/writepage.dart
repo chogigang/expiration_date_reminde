@@ -1,10 +1,11 @@
 import 'package:drift/drift.dart' as drift;
+import 'package:expiration_date/data/database.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:html/parser.dart' as parser;
-import 'package:expiration_date/data/fooddb.dart';
+import 'package:sqflite/sqlite_api.dart';
 
 class WritePage extends StatefulWidget {
   const WritePage({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class _WritePageState extends State<WritePage> {
   final alarmCycleController = TextEditingController();
   String imageUrl = '';
 
+  // 상품 정보 가져오기
   Future<void> getProduct(String barcode) async {
     var apiKey = '08250c6f4a19422781f0';
     var url = Uri.parse(
@@ -38,6 +40,7 @@ class _WritePageState extends State<WritePage> {
     }
   }
 
+  // 구글 이미지 검색
   Future<void> fetchGoogleImages(String keyword) async {
     final response = await http
         .get(Uri.parse('https://www.google.com/search?q=$keyword&tbm=isch'));
@@ -58,6 +61,7 @@ class _WritePageState extends State<WritePage> {
     }
   }
 
+  // 원형 위젯 생성
   Widget _buildCircle(
       Alignment alignment, double size, Color color, Function onPressed) {
     return Align(
@@ -84,6 +88,7 @@ class _WritePageState extends State<WritePage> {
     );
   }
 
+  // 아이콘과 함께 원형 위젯 생성
   Widget _buildCircleWithIcon(Alignment alignment, double size, Color color,
       Function onPressed, IconData icon) {
     return Align(
@@ -113,9 +118,9 @@ class _WritePageState extends State<WritePage> {
     return Card(
       child: Stack(
         children: <Widget>[
-          _buildCircle(Alignment(0, -0.6), 180, Colors.black, () {}),
+          _buildCircle(const Alignment(0, -0.6), 180, Colors.black, () {}),
           _buildCircleWithIcon(
-            Alignment(0.3, -0.3),
+            const Alignment(0.3, -0.3),
             50,
             Colors.grey,
             () async {
@@ -135,7 +140,7 @@ class _WritePageState extends State<WritePage> {
             Icons.add,
           ),
           Align(
-            alignment: Alignment(0, 0.65),
+            alignment: const Alignment(0, 0.65),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -181,7 +186,7 @@ class _WritePageState extends State<WritePage> {
                       String expiryDate = expiryDateController.text;
                       String alarmCycle = alarmCycleController.text;
 
-                      Database db = Database();
+                      MyDatabase db = MyDatabase();
                       int? alarmCycleInt = int.tryParse(alarmCycle);
                       FooddbCompanion newFood = FooddbCompanion.insert(
                         name: productName,
@@ -189,7 +194,7 @@ class _WritePageState extends State<WritePage> {
                         alarm_cycle: drift.Value(alarmCycleInt),
                         type: '',
                       );
-                      int id = await db.createFooddb(newFood); // await 키워드 추가
+                      int id = await db.addFooddb(newFood); // await 키워드 추가
 
                       if (id > 0) {
                         // 데이터가 성공적으로 추가되었는지 확인
@@ -198,14 +203,14 @@ class _WritePageState extends State<WritePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('알림'),
-                              content: Text('항목이 성공적으로 추가되었습니다.'),
+                              title: const Text('알림'),
+                              content: const Text('항목이 성공적으로 추가되었습니다.'),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text('확인'),
+                                  child: const Text('확인'),
                                 ),
                               ],
                             );
@@ -220,9 +225,9 @@ class _WritePageState extends State<WritePage> {
                       expiryDateController.clear();
                       alarmCycleController.clear();
                     },
-                    child: Text("등록하기"),
+                    child: const Text("등록하기"),
                   ),
-                ),
+                ), // 등록 버튼 중괄호
               ],
             ),
           ),

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'fooddb.dart';
+part of 'database.dart';
 
 // **************************************************************************
 // MoorGenerator
@@ -14,15 +14,16 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
   final DateTime expiry_date;
   final int? alarm_cycle;
   final DateTime createdAt;
+  final Uint8List? image_url;
   FooddbData(
       {required this.id,
       required this.name,
       required this.type,
       required this.expiry_date,
       this.alarm_cycle,
-      required this.createdAt});
-  factory FooddbData.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
+      required this.createdAt,
+      this.image_url});
+  factory FooddbData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return FooddbData(
       id: const IntType()
@@ -37,6 +38,8 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}alarm_cycle']),
       createdAt: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
+      image_url: const BlobType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}image_url']),
     );
   }
   @override
@@ -50,6 +53,9 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
       map['alarm_cycle'] = Variable<int?>(alarm_cycle);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || image_url != null) {
+      map['image_url'] = Variable<Uint8List?>(image_url);
+    }
     return map;
   }
 
@@ -63,6 +69,9 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           ? const Value.absent()
           : Value(alarm_cycle),
       createdAt: Value(createdAt),
+      image_url: image_url == null && nullToAbsent
+          ? const Value.absent()
+          : Value(image_url),
     );
   }
 
@@ -76,6 +85,7 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
       expiry_date: serializer.fromJson<DateTime>(json['expiry_date']),
       alarm_cycle: serializer.fromJson<int?>(json['alarm_cycle']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      image_url: serializer.fromJson<Uint8List?>(json['image_url']),
     );
   }
   @override
@@ -88,6 +98,7 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
       'expiry_date': serializer.toJson<DateTime>(expiry_date),
       'alarm_cycle': serializer.toJson<int?>(alarm_cycle),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'image_url': serializer.toJson<Uint8List?>(image_url),
     };
   }
 
@@ -97,7 +108,8 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           String? type,
           DateTime? expiry_date,
           int? alarm_cycle,
-          DateTime? createdAt}) =>
+          DateTime? createdAt,
+          Uint8List? image_url}) =>
       FooddbData(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -105,6 +117,7 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
         expiry_date: expiry_date ?? this.expiry_date,
         alarm_cycle: alarm_cycle ?? this.alarm_cycle,
         createdAt: createdAt ?? this.createdAt,
+        image_url: image_url ?? this.image_url,
       );
   @override
   String toString() {
@@ -114,14 +127,15 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           ..write('type: $type, ')
           ..write('expiry_date: $expiry_date, ')
           ..write('alarm_cycle: $alarm_cycle, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('image_url: $image_url')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, type, expiry_date, alarm_cycle, createdAt);
+  int get hashCode => Object.hash(
+      id, name, type, expiry_date, alarm_cycle, createdAt, image_url);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -131,7 +145,8 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           other.type == this.type &&
           other.expiry_date == this.expiry_date &&
           other.alarm_cycle == this.alarm_cycle &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.image_url == this.image_url);
 }
 
 class FooddbCompanion extends UpdateCompanion<FooddbData> {
@@ -141,6 +156,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
   final Value<DateTime> expiry_date;
   final Value<int?> alarm_cycle;
   final Value<DateTime> createdAt;
+  final Value<Uint8List?> image_url;
   const FooddbCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -148,6 +164,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     this.expiry_date = const Value.absent(),
     this.alarm_cycle = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.image_url = const Value.absent(),
   });
   FooddbCompanion.insert({
     this.id = const Value.absent(),
@@ -156,6 +173,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     required DateTime expiry_date,
     this.alarm_cycle = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.image_url = const Value.absent(),
   })  : name = Value(name),
         type = Value(type),
         expiry_date = Value(expiry_date);
@@ -166,6 +184,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     Expression<DateTime>? expiry_date,
     Expression<int?>? alarm_cycle,
     Expression<DateTime>? createdAt,
+    Expression<Uint8List?>? image_url,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -174,6 +193,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
       if (expiry_date != null) 'expiry_date': expiry_date,
       if (alarm_cycle != null) 'alarm_cycle': alarm_cycle,
       if (createdAt != null) 'created_at': createdAt,
+      if (image_url != null) 'image_url': image_url,
     });
   }
 
@@ -183,7 +203,8 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
       Value<String>? type,
       Value<DateTime>? expiry_date,
       Value<int?>? alarm_cycle,
-      Value<DateTime>? createdAt}) {
+      Value<DateTime>? createdAt,
+      Value<Uint8List?>? image_url}) {
     return FooddbCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -191,6 +212,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
       expiry_date: expiry_date ?? this.expiry_date,
       alarm_cycle: alarm_cycle ?? this.alarm_cycle,
       createdAt: createdAt ?? this.createdAt,
+      image_url: image_url ?? this.image_url,
     );
   }
 
@@ -215,6 +237,9 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (image_url.present) {
+      map['image_url'] = Variable<Uint8List?>(image_url.value);
+    }
     return map;
   }
 
@@ -226,7 +251,8 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
           ..write('type: $type, ')
           ..write('expiry_date: $expiry_date, ')
           ..write('alarm_cycle: $alarm_cycle, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('image_url: $image_url')
           ..write(')'))
         .toString();
   }
@@ -273,9 +299,14 @@ class $FooddbTable extends Fooddb with TableInfo<$FooddbTable, FooddbData> {
       type: const IntType(),
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now()));
+  final VerificationMeta _image_urlMeta = const VerificationMeta('image_url');
+  @override
+  late final GeneratedColumn<Uint8List?> image_url =
+      GeneratedColumn<Uint8List?>('image_url', aliasedName, true,
+          type: const BlobType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, type, expiry_date, alarm_cycle, createdAt];
+      [id, name, type, expiry_date, alarm_cycle, createdAt, image_url];
   @override
   String get aliasedName => _alias ?? 'fooddb';
   @override
@@ -318,6 +349,10 @@ class $FooddbTable extends Fooddb with TableInfo<$FooddbTable, FooddbData> {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     }
+    if (data.containsKey('image_url')) {
+      context.handle(_image_urlMeta,
+          image_url.isAcceptableOrUnknown(data['image_url']!, _image_urlMeta));
+    }
     return context;
   }
 
@@ -325,7 +360,7 @@ class $FooddbTable extends Fooddb with TableInfo<$FooddbTable, FooddbData> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   FooddbData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return FooddbData.fromData(data, attachedDatabase,
+    return FooddbData.fromData(data,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
@@ -335,94 +370,11 @@ class $FooddbTable extends Fooddb with TableInfo<$FooddbTable, FooddbData> {
   }
 }
 
-class FooddbViewData extends DataClass {
-  final int id;
-  FooddbViewData({required this.id});
-  factory FooddbViewData.fromData(Map<String, dynamic> data, {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return FooddbViewData(
-      id: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-    );
-  }
-  factory FooddbViewData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return FooddbViewData(
-      id: serializer.fromJson<int>(json['id']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-    };
-  }
-
-  FooddbViewData copyWith({int? id}) => FooddbViewData(
-        id: id ?? this.id,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('FooddbViewData(')
-          ..write('id: $id')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => id.hashCode;
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is FooddbViewData && other.id == this.id);
-}
-
-class $FooddbViewView extends ViewInfo<$FooddbViewView, FooddbViewData>
-    implements HasResultSet {
-  final String? _alias;
-  @override
-  final _$Database attachedDatabase;
-  $FooddbViewView(this.attachedDatabase, [this._alias]);
-  $FooddbTable get fooddb => attachedDatabase.fooddb.createAlias('t0');
-  @override
-  List<GeneratedColumn> get $columns => [fooddb.id];
-  @override
-  String get aliasedName => _alias ?? entityName;
-  @override
-  String get entityName => 'fooddb_view';
-  @override
-  String? get createViewStmt => null;
-  @override
-  $FooddbViewView get asDslTable => this;
-  @override
-  FooddbViewData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return FooddbViewData.fromData(data,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
-  }
-
-  late final GeneratedColumn<int?> id =
-      GeneratedColumn<int?>('id', aliasedName, false, type: const IntType());
-  @override
-  $FooddbViewView createAlias(String alias) {
-    return $FooddbViewView(attachedDatabase, alias);
-  }
-
-  @override
-  Query? get query =>
-      (attachedDatabase.selectOnly(fooddb, includeJoinedTableColumns: false)
-        ..addColumns($columns));
-  @override
-  Set<String> get readTables => const {'fooddb'};
-}
-
-abstract class _$Database extends GeneratedDatabase {
-  _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+abstract class _$MyDatabase extends GeneratedDatabase {
+  _$MyDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   late final $FooddbTable fooddb = $FooddbTable(this);
-  late final $FooddbViewView fooddbView = $FooddbViewView(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [fooddb, fooddbView];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [fooddb];
 }
