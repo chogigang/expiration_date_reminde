@@ -5,7 +5,9 @@ import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:html/parser.dart' as parser;
-import 'package:sqflite/sqlite_api.dart';
+import 'package:expiration_date/data/fooddb.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image_picker/image_picker.dart';
 
 class WritePage extends StatefulWidget {
   const WritePage({Key? key}) : super(key: key);
@@ -21,7 +23,6 @@ class _WritePageState extends State<WritePage> {
   final alarmCycleController = TextEditingController();
   String imageUrl = '';
 
-  // 상품 정보 가져오기
   Future<void> getProduct(String barcode) async {
     var apiKey = '08250c6f4a19422781f0';
     var url = Uri.parse(
@@ -40,7 +41,6 @@ class _WritePageState extends State<WritePage> {
     }
   }
 
-  // 구글 이미지 검색
   Future<void> fetchGoogleImages(String keyword) async {
     final response = await http
         .get(Uri.parse('https://www.google.com/search?q=$keyword&tbm=isch'));
@@ -61,7 +61,33 @@ class _WritePageState extends State<WritePage> {
     }
   }
 
-  // 원형 위젯 생성
+  Future<void> _takePicture() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      final inputImage = InputImage.fromFilePath(pickedFile.path);
+      final textRecognizer =
+          TextRecognizer(script: TextRecognitionScript.latin);
+
+      setState(() {
+        // Busy 상태를 나타내기 위해 true로 설정합니다.
+      });
+
+      final RecognizedText recognizedText =
+          await textRecognizer.processImage(inputImage);
+
+      setState(() {
+        expiryDateController.text = recognizedText.text;
+        // Busy 상태를 해제합니다.
+      });
+
+      textRecognizer.close();
+    } else {
+      print('No image selected.');
+    }
+  }
+
   Widget _buildCircle(
       Alignment alignment, double size, Color color, Function onPressed) {
     return Align(
@@ -88,7 +114,6 @@ class _WritePageState extends State<WritePage> {
     );
   }
 
-  // 아이콘과 함께 원형 위젯 생성
   Widget _buildCircleWithIcon(Alignment alignment, double size, Color color,
       Function onPressed, IconData icon) {
     return Align(
@@ -118,9 +143,9 @@ class _WritePageState extends State<WritePage> {
     return Card(
       child: Stack(
         children: <Widget>[
-          _buildCircle(const Alignment(0, -0.6), 180, Colors.black, () {}),
+          _buildCircle(Alignment(0, -0.6), 180, Colors.black, () {}),
           _buildCircleWithIcon(
-            const Alignment(0.3, -0.3),
+            Alignment(0.3, -0.3),
             50,
             Colors.grey,
             () async {
@@ -140,7 +165,7 @@ class _WritePageState extends State<WritePage> {
             Icons.add,
           ),
           Align(
-            alignment: const Alignment(0, 0.65),
+            alignment: Alignment(0, 0.65),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -158,12 +183,22 @@ class _WritePageState extends State<WritePage> {
                   padding: const EdgeInsets.only(
                     top: 5,
                   ),
-                  child: TextField(
-                    controller: expiryDateController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: '유통기한',
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: expiryDateController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '유통기한',
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.camera_alt),
+                        onPressed: _takePicture,
+                      ),
+                    ],
                   ),
                 ),
                 Padding(
@@ -203,14 +238,14 @@ class _WritePageState extends State<WritePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('알림'),
-                              content: const Text('항목이 성공적으로 추가되었습니다.'),
+                              title: Text('알림'),
+                              content: Text('항목이 성공적으로 추가되었습니다.'),
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('확인'),
+                                  child: Text('확인'),
                                 ),
                               ],
                             );
@@ -225,9 +260,16 @@ class _WritePageState extends State<WritePage> {
                       expiryDateController.clear();
                       alarmCycleController.clear();
                     },
-                    child: const Text("등록하기"),
+                    child: Text("등록하기"),
                   ),
-                ), // 등록 버튼 중괄호
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    '인식한 문자: ${expiryDateController.text}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
               ],
             ),
           ),
