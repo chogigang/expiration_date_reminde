@@ -1,6 +1,7 @@
 import 'package:expiration_date/data/database.dart';
 import 'package:flutter/material.dart';
 import 'package:expiration_date/data/fooddb.dart'; // Fooddb 테이블 정의가 포함된 파일
+import 'package:expiration_date/detailpage.dart';
 
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
@@ -42,6 +43,8 @@ class _ListState extends State<ListPage> {
             return a.name.compareTo(b.name);
           case 'expiry_date':
             return a.expiry_date.compareTo(b.expiry_date);
+          case 'type':
+            return a.type.compareTo(b.type);
           default:
             return 0;
         }
@@ -83,6 +86,13 @@ class _ListState extends State<ListPage> {
                             Navigator.pop(context);
                           },
                         ),
+                        ListTile(
+                          title: const Text('종류순'),
+                          onTap: () {
+                            _sortFoodItems('type');
+                            Navigator.pop(context);
+                          },
+                        ),
                       ],
                     ),
                   );
@@ -119,8 +129,13 @@ class _ListState extends State<ListPage> {
                       child: Text(foodItem.name[0].toUpperCase()),
                     ),
                     title: Text(foodItem.name),
-                    subtitle: Text(
-                      '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}',
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}'),
+                        Text('종류: ${foodItem.type}'), // 종류 추가
+                      ],
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
@@ -144,7 +159,9 @@ class _ListState extends State<ListPage> {
                         );
                         if (confirmDelete == true) {
                           await MyDatabase().deleteFooddb(foodItem);
-                          setState(() {});
+                          setState(() {
+                            _foodItems.remove(foodItem); // 삭제 후 목록 갱신
+                          });
                         }
                       },
                     ),
@@ -162,39 +179,6 @@ class _ListState extends State<ListPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DetailPage extends StatelessWidget {
-  final FooddbData foodItem;
-
-  const DetailPage({Key? key, required this.foodItem}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(foodItem.name),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              '식품 이름: ${foodItem.name}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}',
-              style: TextStyle(fontSize: 18),
-            ),
-            // 여기에 추가적인 식품 정보를 표시할 수 있습니다.
-          ],
-        ),
       ),
     );
   }

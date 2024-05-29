@@ -5,7 +5,6 @@ import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:html/parser.dart' as parser;
-import 'package:expiration_date/data/fooddb.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,6 +20,7 @@ class _WritePageState extends State<WritePage> {
   final productNameController = TextEditingController();
   final expiryDateController = TextEditingController();
   final alarmCycleController = TextEditingController();
+  final typeController = TextEditingController();
   String imageUrl = '';
 
   Future<void> getProduct(String barcode) async {
@@ -183,6 +183,18 @@ class _WritePageState extends State<WritePage> {
                   padding: const EdgeInsets.only(
                     top: 5,
                   ),
+                  child: TextField(
+                    controller: typeController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: '종류',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 5,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
@@ -214,12 +226,14 @@ class _WritePageState extends State<WritePage> {
                   ),
                 ),
                 Padding(
+                  // 추가 버튼
                   padding: const EdgeInsets.only(left: 10.0, right: 0),
                   child: ElevatedButton(
                     onPressed: () async {
                       String productName = productNameController.text;
                       String expiryDate = expiryDateController.text;
                       String alarmCycle = alarmCycleController.text;
+                      String type = typeController.text;
 
                       MyDatabase db = MyDatabase();
                       int? alarmCycleInt = int.tryParse(alarmCycle);
@@ -227,7 +241,7 @@ class _WritePageState extends State<WritePage> {
                         name: productName,
                         expiry_date: DateTime.parse(expiryDate),
                         alarm_cycle: drift.Value(alarmCycleInt),
-                        type: '',
+                        type: type,
                       );
                       int id = await db.addFooddb(newFood); // await 키워드 추가
 
@@ -259,6 +273,7 @@ class _WritePageState extends State<WritePage> {
                       productNameController.clear();
                       expiryDateController.clear();
                       alarmCycleController.clear();
+                      typeController.clear();
                     },
                     child: Text("등록하기"),
                   ),
