@@ -1,10 +1,34 @@
-import 'package:expiration_date/data/database.dart';
+// detail_page.dart
+import 'package:expiration_date/recipepage.dart';
 import 'package:flutter/material.dart';
+import 'package:expiration_date/data/database.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DetailPage extends StatelessWidget {
   final FooddbData foodItem;
 
   const DetailPage({Key? key, required this.foodItem}) : super(key: key);
+
+  Future<void> _showRecipes(BuildContext context, String searchQuery) async {
+    final apiKey = '856346fdbba3479482aa';
+    final url = Uri.parse(
+        'http://openapi.foodsafetykorea.go.kr/api/$apiKey/COOKRCP01/json/1/5/RCP_NM=$searchQuery');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final recipes = jsonResponse['COOKRCP01']['row'];
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RecipePage(recipes: recipes),
+        ),
+      );
+    } else {
+      print('Failed to load recipes');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +57,7 @@ class DetailPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              '알람 주기: ${foodItem.alarm_cycle ?? '설정되지 않음'}', // null일 경우 '설정되지 않음'을 표시
+              '알람 주기: ${foodItem.alarm_cycle ?? '설정되지 않음'}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 10),
@@ -41,7 +65,11 @@ class DetailPage extends StatelessWidget {
               '등록일: ${foodItem.createdAt.toIso8601String().split('T')[0]}',
               style: TextStyle(fontSize: 18),
             ),
-            // 기타 필요한 정보 추가 가능
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _showRecipes(context, foodItem.name),
+              child: Text('레시피 보기'),
+            ),
           ],
         ),
       ),

@@ -1,6 +1,5 @@
 import 'package:expiration_date/data/database.dart';
 import 'package:flutter/material.dart';
-import 'package:expiration_date/data/fooddb.dart'; // Fooddb 테이블 정의가 포함된 파일
 import 'package:expiration_date/detailpage.dart';
 
 class ListPage extends StatefulWidget {
