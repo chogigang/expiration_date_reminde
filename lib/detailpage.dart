@@ -1,4 +1,3 @@
-// detail_page.dart
 import 'package:expiration_date/recipepage.dart';
 import 'package:flutter/material.dart';
 import 'package:expiration_date/data/database.dart';
@@ -14,19 +13,43 @@ class DetailPage extends StatelessWidget {
     final apiKey = '856346fdbba3479482aa';
     final url = Uri.parse(
         'http://openapi.foodsafetykorea.go.kr/api/$apiKey/COOKRCP01/json/1/5/RCP_NM=$searchQuery');
-    final response = await http.get(url);
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      final recipes = jsonResponse['COOKRCP01']['row'];
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecipePage(recipes: recipes),
-        ),
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        print('JSON Response: $jsonResponse'); // 응답 출력
+
+        final recipes = jsonResponse['COOKRCP01']?['row'];
+
+        if (recipes != null && recipes is List) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RecipePage(
+                  initialRecipes: recipes, initialSearchQuery: searchQuery),
+            ),
+          );
+        } else {
+          print('No recipes found');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('No recipes found')),
+          );
+        }
+      } else {
+        print('Failed to load recipes');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load recipes')),
+        );
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred while fetching recipes')),
       );
-    } else {
-      print('Failed to load recipes');
     }
   }
 
