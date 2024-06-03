@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:html/parser.dart' as parser;
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:camera/camera.dart';
+
+List<CameraDescription>? cameras;
 
 class WritePage extends StatefulWidget {
   const WritePage({Key? key}) : super(key: key);
@@ -22,6 +24,33 @@ class _WritePageState extends State<WritePage> {
   final alarmCycleController = TextEditingController();
   final typeController = TextEditingController();
   String imageUrl = '';
+  CameraController? _cameraController;
+
+  @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  Future<void> _initCamera() async {
+    cameras = await availableCameras();
+    if (cameras!.isNotEmpty) {
+      _cameraController = CameraController(
+        cameras![0],
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
+      await _cameraController!.initialize();
+      await _cameraController!.setFlashMode(FlashMode.off);
+      setState(() {}); // 카메라 초기화 후 상태 갱신
+    }
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
 
   Future<void> getProduct(String barcode) async {
     var apiKey = '08250c6f4a19422781f0';
@@ -62,29 +91,76 @@ class _WritePageState extends State<WritePage> {
   }
 
   Future<void> _takePicture() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    if (pickedFile != null) {
-      final inputImage = InputImage.fromFilePath(pickedFile.path);
+    if (_cameraController != null && _cameraController!.value.isInitialized) {
+      final XFile file = await _cameraController!.takePicture();
+      final inputImage = InputImage.fromFilePath(file.path);
       final textRecognizer =
           TextRecognizer(script: TextRecognitionScript.latin);
 
-      setState(() {
-        // Busy 상태를 나타내기 위해 true로 설정합니다.
-      });
-
       final RecognizedText recognizedText =
           await textRecognizer.processImage(inputImage);
+      String? formattedDate = _formatDate(recognizedText.text);
 
       setState(() {
-        expiryDateController.text = recognizedText.text;
-        // Busy 상태를 해제합니다.
+        expiryDateController.text = formattedDate ?? "Date not found";
       });
 
       textRecognizer.close();
     } else {
-      print('No image selected.');
+      print('No camera selected or camera not initialized');
+    }
+  }
+
+  String? _formatDate(String text) {
+    RegExp dateRegex = RegExp(r'\b(\d{2}|\d{4})[.](\d{1,2})[.](\d{1,2})\b');
+    Iterable<RegExpMatch> matches = dateRegex.allMatches(text);
+
+    if (matches.isNotEmpty) {
+      // Assuming the first matched date is the relevant one
+      var match = matches.first;
+      String year = match.group(1)!;
+      String month = match.group(2)!;
+      String day = match.group(3)!;
+
+      // Normalize year to four digits
+      if (year.length == 2) {
+        year = '20$year';
+      }
+
+      // Return date in yyyy-mm-dd format
+      return '$year-$month-$day';
+    }
+    return null; // No valid date found
+  }
+
+  Future<void> _startCameraPreview(BuildContext context) async {
+    if (_cameraController != null && _cameraController!.value.isInitialized) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Scaffold(
+            appBar: AppBar(title: Text('Camera')),
+            body: Stack(
+              children: [
+                CameraPreview(_cameraController!),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        await _takePicture();
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.camera),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
   }
 
@@ -208,7 +284,7 @@ class _WritePageState extends State<WritePage> {
                       ),
                       IconButton(
                         icon: Icon(Icons.camera_alt),
-                        onPressed: _takePicture,
+                        onPressed: () => _startCameraPreview(context),
                       ),
                     ],
                   ),
