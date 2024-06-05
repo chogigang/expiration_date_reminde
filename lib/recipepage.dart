@@ -99,21 +99,21 @@ class _RecipePageState extends State<RecipePage> {
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '레시피 검색',
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: _showRecipes,
-                  child: Text('검색'),
+                  child: const Text('검색'),
                 ),
               ],
             ),
           ),
           _isLoading
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : _recipes.isEmpty
                   ? Center(child: Text(_message))
                   : Expanded(

@@ -14,7 +14,8 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
   final DateTime expiry_date;
   final int? alarm_cycle;
   final DateTime createdAt;
-  final Uint8List? image_url;
+  final Uint8List? image_data;
+  final String? image_url;
   FooddbData(
       {required this.id,
       required this.name,
@@ -22,6 +23,7 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
       required this.expiry_date,
       this.alarm_cycle,
       required this.createdAt,
+      this.image_data,
       this.image_url});
   factory FooddbData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -38,7 +40,9 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}alarm_cycle']),
       createdAt: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
-      image_url: const BlobType()
+      image_data: const BlobType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}image_data']),
+      image_url: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}image_url']),
     );
   }
@@ -53,8 +57,11 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
       map['alarm_cycle'] = Variable<int?>(alarm_cycle);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || image_data != null) {
+      map['image_data'] = Variable<Uint8List?>(image_data);
+    }
     if (!nullToAbsent || image_url != null) {
-      map['image_url'] = Variable<Uint8List?>(image_url);
+      map['image_url'] = Variable<String?>(image_url);
     }
     return map;
   }
@@ -69,6 +76,9 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           ? const Value.absent()
           : Value(alarm_cycle),
       createdAt: Value(createdAt),
+      image_data: image_data == null && nullToAbsent
+          ? const Value.absent()
+          : Value(image_data),
       image_url: image_url == null && nullToAbsent
           ? const Value.absent()
           : Value(image_url),
@@ -85,7 +95,8 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
       expiry_date: serializer.fromJson<DateTime>(json['expiry_date']),
       alarm_cycle: serializer.fromJson<int?>(json['alarm_cycle']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      image_url: serializer.fromJson<Uint8List?>(json['image_url']),
+      image_data: serializer.fromJson<Uint8List?>(json['image_data']),
+      image_url: serializer.fromJson<String?>(json['image_url']),
     );
   }
   @override
@@ -98,7 +109,8 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
       'expiry_date': serializer.toJson<DateTime>(expiry_date),
       'alarm_cycle': serializer.toJson<int?>(alarm_cycle),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'image_url': serializer.toJson<Uint8List?>(image_url),
+      'image_data': serializer.toJson<Uint8List?>(image_data),
+      'image_url': serializer.toJson<String?>(image_url),
     };
   }
 
@@ -109,7 +121,8 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           DateTime? expiry_date,
           int? alarm_cycle,
           DateTime? createdAt,
-          Uint8List? image_url}) =>
+          Uint8List? image_data,
+          String? image_url}) =>
       FooddbData(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -117,6 +130,7 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
         expiry_date: expiry_date ?? this.expiry_date,
         alarm_cycle: alarm_cycle ?? this.alarm_cycle,
         createdAt: createdAt ?? this.createdAt,
+        image_data: image_data ?? this.image_data,
         image_url: image_url ?? this.image_url,
       );
   @override
@@ -128,14 +142,15 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           ..write('expiry_date: $expiry_date, ')
           ..write('alarm_cycle: $alarm_cycle, ')
           ..write('createdAt: $createdAt, ')
+          ..write('image_data: $image_data, ')
           ..write('image_url: $image_url')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, type, expiry_date, alarm_cycle, createdAt, image_url);
+  int get hashCode => Object.hash(id, name, type, expiry_date, alarm_cycle,
+      createdAt, image_data, image_url);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -146,6 +161,7 @@ class FooddbData extends DataClass implements Insertable<FooddbData> {
           other.expiry_date == this.expiry_date &&
           other.alarm_cycle == this.alarm_cycle &&
           other.createdAt == this.createdAt &&
+          other.image_data == this.image_data &&
           other.image_url == this.image_url);
 }
 
@@ -156,7 +172,8 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
   final Value<DateTime> expiry_date;
   final Value<int?> alarm_cycle;
   final Value<DateTime> createdAt;
-  final Value<Uint8List?> image_url;
+  final Value<Uint8List?> image_data;
+  final Value<String?> image_url;
   const FooddbCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -164,6 +181,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     this.expiry_date = const Value.absent(),
     this.alarm_cycle = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.image_data = const Value.absent(),
     this.image_url = const Value.absent(),
   });
   FooddbCompanion.insert({
@@ -173,6 +191,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     required DateTime expiry_date,
     this.alarm_cycle = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.image_data = const Value.absent(),
     this.image_url = const Value.absent(),
   })  : name = Value(name),
         type = Value(type),
@@ -184,7 +203,8 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     Expression<DateTime>? expiry_date,
     Expression<int?>? alarm_cycle,
     Expression<DateTime>? createdAt,
-    Expression<Uint8List?>? image_url,
+    Expression<Uint8List?>? image_data,
+    Expression<String?>? image_url,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -193,6 +213,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
       if (expiry_date != null) 'expiry_date': expiry_date,
       if (alarm_cycle != null) 'alarm_cycle': alarm_cycle,
       if (createdAt != null) 'created_at': createdAt,
+      if (image_data != null) 'image_data': image_data,
       if (image_url != null) 'image_url': image_url,
     });
   }
@@ -204,7 +225,8 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
       Value<DateTime>? expiry_date,
       Value<int?>? alarm_cycle,
       Value<DateTime>? createdAt,
-      Value<Uint8List?>? image_url}) {
+      Value<Uint8List?>? image_data,
+      Value<String?>? image_url}) {
     return FooddbCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -212,6 +234,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
       expiry_date: expiry_date ?? this.expiry_date,
       alarm_cycle: alarm_cycle ?? this.alarm_cycle,
       createdAt: createdAt ?? this.createdAt,
+      image_data: image_data ?? this.image_data,
       image_url: image_url ?? this.image_url,
     );
   }
@@ -237,8 +260,11 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (image_data.present) {
+      map['image_data'] = Variable<Uint8List?>(image_data.value);
+    }
     if (image_url.present) {
-      map['image_url'] = Variable<Uint8List?>(image_url.value);
+      map['image_url'] = Variable<String?>(image_url.value);
     }
     return map;
   }
@@ -252,6 +278,7 @@ class FooddbCompanion extends UpdateCompanion<FooddbData> {
           ..write('expiry_date: $expiry_date, ')
           ..write('alarm_cycle: $alarm_cycle, ')
           ..write('createdAt: $createdAt, ')
+          ..write('image_data: $image_data, ')
           ..write('image_url: $image_url')
           ..write(')'))
         .toString();
@@ -299,14 +326,27 @@ class $FooddbTable extends Fooddb with TableInfo<$FooddbTable, FooddbData> {
       type: const IntType(),
       requiredDuringInsert: false,
       defaultValue: Constant(DateTime.now()));
+  final VerificationMeta _image_dataMeta = const VerificationMeta('image_data');
+  @override
+  late final GeneratedColumn<Uint8List?> image_data =
+      GeneratedColumn<Uint8List?>('image_data', aliasedName, true,
+          type: const BlobType(), requiredDuringInsert: false);
   final VerificationMeta _image_urlMeta = const VerificationMeta('image_url');
   @override
-  late final GeneratedColumn<Uint8List?> image_url =
-      GeneratedColumn<Uint8List?>('image_url', aliasedName, true,
-          type: const BlobType(), requiredDuringInsert: false);
+  late final GeneratedColumn<String?> image_url = GeneratedColumn<String?>(
+      'image_url', aliasedName, true,
+      type: const StringType(), requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, type, expiry_date, alarm_cycle, createdAt, image_url];
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        type,
+        expiry_date,
+        alarm_cycle,
+        createdAt,
+        image_data,
+        image_url
+      ];
   @override
   String get aliasedName => _alias ?? 'fooddb';
   @override
@@ -348,6 +388,12 @@ class $FooddbTable extends Fooddb with TableInfo<$FooddbTable, FooddbData> {
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('image_data')) {
+      context.handle(
+          _image_dataMeta,
+          image_data.isAcceptableOrUnknown(
+              data['image_data']!, _image_dataMeta));
     }
     if (data.containsKey('image_url')) {
       context.handle(_image_urlMeta,

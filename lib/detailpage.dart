@@ -36,19 +36,20 @@ class DetailPage extends StatelessWidget {
         } else {
           print('No recipes found');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('No recipes found')),
+            const SnackBar(content: Text('No recipes found')),
           );
         }
       } else {
         print('Failed to load recipes');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load recipes')),
+          const SnackBar(content: Text('Failed to load recipes')),
         );
       }
     } catch (e) {
       print('Error occurred: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred while fetching recipes')),
+        const SnackBar(
+            content: Text('An error occurred while fetching recipes')),
       );
     }
   }
@@ -64,34 +65,38 @@ class DetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            if (foodItem.image_data != null) Image.memory(foodItem.image_data!),
+            if (foodItem.image_url != null && foodItem.image_url!.isNotEmpty)
+              Image.network(foodItem.image_url!),
+            const SizedBox(height: 10),
             Text(
               '식품 이름: ${foodItem.name}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               '종류: ${foodItem.type}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               '알람 주기: ${foodItem.alarm_cycle ?? '설정되지 않음'}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               '등록일: ${foodItem.createdAt.toIso8601String().split('T')[0]}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => _showRecipes(context, foodItem.name),
-              child: Text('레시피 보기'),
+              child: const Text('레시피 보기'),
             ),
           ],
         ),

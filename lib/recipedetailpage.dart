@@ -19,20 +19,21 @@ class RecipeDetailPage extends StatelessWidget {
             children: <Widget>[
               Text(
                 recipe['RCP_NM'],
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 '조리법: ${recipe['RCP_WAY2']}',
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 '재료: ${recipe['RCP_PARTS_DTLS']}',
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 '조리 방법:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -62,7 +63,7 @@ class RecipeDetailPage extends StatelessWidget {
               children: [
                 Text(
                   'Step $stepNumber: $stepText',
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 if (stepImgUrl != null && stepImgUrl.isNotEmpty)
                   Padding(

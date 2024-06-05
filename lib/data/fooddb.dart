@@ -1,21 +1,22 @@
 import 'package:drift/drift.dart';
 
 class Fooddb extends Table {
-  IntColumn get id => integer().autoIncrement()(); //.call() 써서 끝나는걸 보여준다.
+  IntColumn get id => integer().autoIncrement()();
 
-  TextColumn get name =>
-      text()(); //carvar()대신 text() 사용 .withLength 사용해서 최소 최대 설정 가능
+  TextColumn get name => text()();
 
-  TextColumn get type => text()(); //종류
+  TextColumn get type => text()();
 
-  DateTimeColumn get expiry_date => dateTime()(); //유통기한
+  DateTimeColumn get expiry_date => dateTime()();
 
-  IntColumn get alarm_cycle => integer().nullable()(); // 알람주기
+  IntColumn get alarm_cycle => integer().nullable()();
 
   DateTimeColumn get createdAt =>
-      dateTime().withDefault(Constant(DateTime.now()))(); //현제 시간 기록
+      dateTime().withDefault(Constant(DateTime.now()))();
 
-  BlobColumn get image_url => blob().nullable()(); //이미지 url
+  BlobColumn get image_data => blob().nullable()(); // 이미지 바이너리 데이터
+
+  TextColumn get image_url => text().nullable()(); // 이미지 URL
 }
 
 /*

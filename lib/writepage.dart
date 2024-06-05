@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:drift/drift.dart' as drift;
 import 'package:expiration_date/data/database.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ class _WritePageState extends State<WritePage> {
   final expiryDateController = TextEditingController();
   final alarmCycleController = TextEditingController();
   final typeController = TextEditingController();
-  String imageUrl = '';
+  String imageUrl = ''; //이미지 url
+  Uint8List? imageData; // 이미지 바이너리 데이터
   CameraController? _cameraController;
 
   @override
@@ -101,8 +103,12 @@ class _WritePageState extends State<WritePage> {
           await textRecognizer.processImage(inputImage);
       String? formattedDate = _formatDate(recognizedText.text);
 
+      // 이미지 파일을 바이너리 데이터로 읽기
+      Uint8List imageData = await file.readAsBytes();
+
       setState(() {
         expiryDateController.text = formattedDate ?? "Date not found";
+        this.imageData = imageData; // 이미지 데이터를 설정
       });
 
       textRecognizer.close();
@@ -139,7 +145,7 @@ class _WritePageState extends State<WritePage> {
         context,
         MaterialPageRoute(
           builder: (context) => Scaffold(
-            appBar: AppBar(title: Text('Camera')),
+            appBar: AppBar(title: const Text('Camera')),
             body: Stack(
               children: [
                 CameraPreview(_cameraController!),
@@ -152,7 +158,7 @@ class _WritePageState extends State<WritePage> {
                         await _takePicture();
                         Navigator.pop(context);
                       },
-                      child: Icon(Icons.camera),
+                      child: const Icon(Icons.camera),
                     ),
                   ),
                 ),
@@ -241,7 +247,7 @@ class _WritePageState extends State<WritePage> {
             Icons.add,
           ),
           Align(
-            alignment: Alignment(0, 0.65),
+            alignment: const Alignment(0, 0.65),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -283,7 +289,7 @@ class _WritePageState extends State<WritePage> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.camera_alt),
+                        icon: const Icon(Icons.camera_alt),
                         onPressed: () => _startCameraPreview(context),
                       ),
                     ],
@@ -318,8 +324,10 @@ class _WritePageState extends State<WritePage> {
                         expiry_date: DateTime.parse(expiryDate),
                         alarm_cycle: drift.Value(alarmCycleInt),
                         type: type,
+                        image_data: drift.Value(imageData), // 이미지 바이너리 데이터 추가
+                        image_url: drift.Value(imageUrl), // 이미지 URL 추가
                       );
-                      int id = await db.addFooddb(newFood); // await 키워드 추가
+                      int id = await db.addFooddb(newFood);
 
                       if (id > 0) {
                         // 데이터가 성공적으로 추가되었는지 확인
@@ -351,14 +359,14 @@ class _WritePageState extends State<WritePage> {
                       alarmCycleController.clear();
                       typeController.clear();
                     },
-                    child: Text("등록하기"),
+                    child: const Text("등록하기"),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
                     '인식한 문자: ${expiryDateController.text}',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
               ],
