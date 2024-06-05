@@ -17,6 +17,9 @@ class Fooddb extends Table {
   BlobColumn get image_data => blob().nullable()(); // 이미지 바이너리 데이터
 
   TextColumn get image_url => text().nullable()(); // 이미지 URL
+
+  // @override
+  // Set<Column> get primaryKey => {id};
 }
 
 /*

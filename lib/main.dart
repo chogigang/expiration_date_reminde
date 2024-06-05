@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart' as kakao;
 import 'firebase_options.dart';
 import 'package:get_it/get_it.dart';
+//import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   // 드리프트 초기화

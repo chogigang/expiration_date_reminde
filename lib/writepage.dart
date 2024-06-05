@@ -1,13 +1,14 @@
+import 'dart:convert';
 import 'dart:typed_data';
+import 'package:camera/camera.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:expiration_date/data/database.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:html/parser.dart' as parser;
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:camera/camera.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 List<CameraDescription>? cameras;
 
@@ -24,7 +25,7 @@ class _WritePageState extends State<WritePage> {
   final expiryDateController = TextEditingController();
   final alarmCycleController = TextEditingController();
   final typeController = TextEditingController();
-  String imageUrl = ''; //이미지 url
+  String imageUrl = ''; // 이미지 url
   Uint8List? imageData; // 이미지 바이너리 데이터
   CameraController? _cameraController;
 
@@ -46,6 +47,16 @@ class _WritePageState extends State<WritePage> {
       await _cameraController!.setFlashMode(FlashMode.off);
       setState(() {}); // 카메라 초기화 후 상태 갱신
     }
+  }
+
+  Future<void> _handlePermission(Permission permission) async {
+    final status = await permission.request();
+    print(status);
+  }
+
+  Future<void> onJoin() async {
+    await _handlePermission(Permission.camera);
+    await _handlePermission(Permission.microphone);
   }
 
   @override
@@ -140,6 +151,7 @@ class _WritePageState extends State<WritePage> {
   }
 
   Future<void> _startCameraPreview(BuildContext context) async {
+    await onJoin(); // 카메라와 마이크 권한 요청
     if (_cameraController != null && _cameraController!.value.isInitialized) {
       await Navigator.push(
         context,
@@ -156,7 +168,7 @@ class _WritePageState extends State<WritePage> {
                     child: FloatingActionButton(
                       onPressed: () async {
                         await _takePicture();
-                        Navigator.pop(context);
+                        Navigator.pop(context); // 촬영 후 뒤로 돌아가기
                       },
                       child: const Icon(Icons.camera),
                     ),
@@ -226,6 +238,13 @@ class _WritePageState extends State<WritePage> {
       child: Stack(
         children: <Widget>[
           _buildCircle(Alignment(0, -0.6), 180, Colors.black, () {}),
+          ElevatedButton(
+            onPressed: () async {
+              // 카메라 촬영 시작
+              await _startCameraPreview(context);
+            },
+            child: const Text("사진 찍기"),
+          ),
           _buildCircleWithIcon(
             Alignment(0.3, -0.3),
             50,
