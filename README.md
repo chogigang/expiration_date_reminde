@@ -2,9 +2,10 @@
 
 A new Flutter project.
 
-flutter sdk 3.19.5,
-        jdk 17,
-     kotlin 1.9,
+flutter sdk :3.22.1,
+dart sdk    :3.4.1,
+        jdk :17,
+     kotlin :1.9,
 kakao_flutter_sdk: ^1.9.1+2,         
 firebase_core: ^2.27.0,
 drift: ^1.7.1
