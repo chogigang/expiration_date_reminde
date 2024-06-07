@@ -4,6 +4,8 @@ import 'package:expiration_date/data/database.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'module/notification.dart';
+
 class DetailPage extends StatelessWidget {
   final FooddbData foodItem;
 
@@ -60,11 +62,16 @@ class DetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(foodItem.name),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            // 알람 임시 테스트
+            TextButton(
+              onPressed: () => FlutterLocalNotification.showNotification(),
+              child: const Text("알림 보내기"),
+            ),
             if (foodItem.image_data != null) Image.memory(foodItem.image_data!),
             if (foodItem.image_url != null && foodItem.image_url!.isNotEmpty)
               Image.network(foodItem.image_url!),
