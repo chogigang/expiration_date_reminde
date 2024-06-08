@@ -1,14 +1,14 @@
-import 'dart:convert';
 import 'package:expiration_date/data/database.dart';
 import 'package:expiration_date/homepage.dart';
 import 'package:expiration_date/module/notification.dart';
-import 'package:expiration_date/module/push_notification_initializer.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart' as kakao;
 import 'module/firebase_options.dart';
 import 'package:get_it/get_it.dart';
+
+import 'module/local_push_notification.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -29,9 +29,26 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 알림 초기화
-  final pushNotificationInitializer = PushNotificationInitializer(navigatorKey);
-  await pushNotificationInitializer.init();
+  final navigatorKey = GlobalKey<NavigatorState>();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    //로컬 푸시 알림 초기화
+    await LocalPushNotifications.init();
+
+    //앱이 종료된 상태에서 푸시 알림을 탭할 때
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+      Future.delayed(const Duration(seconds: 1), () {
+        navigatorKey.currentState!.pushNamed('/message',
+            arguments:
+                notificationAppLaunchDetails?.notificationResponse?.payload);
+      });
+    }
+    runApp(const MyApp());
+  }
 
   runApp(const MyApp());
 }

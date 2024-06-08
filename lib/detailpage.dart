@@ -1,15 +1,36 @@
-import 'package:expiration_date/recipepage.dart';
 import 'package:flutter/material.dart';
 import 'package:expiration_date/data/database.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'module/local_push_notification.dart';
 import 'module/notification.dart';
+import 'recipepage.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final FooddbData foodItem;
 
   const DetailPage({Key? key, required this.foodItem}) : super(key: key);
+
+  @override
+  _DetailPageState createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  void initState() {
+    listenNotifications();
+    super.initState();
+  }
+
+  //푸시 알림 스트림에 데이터를 리슨
+  void listenNotifications() {
+    LocalPushNotifications.notificationStream.stream.listen((String? payload) {
+      if (payload != null) {
+        print('Received payload: $payload');
+        Navigator.pushNamed(context, '/message', arguments: payload);
+      }
+    });
+  }
 
   Future<void> _showRecipes(BuildContext context, String searchQuery) async {
     final apiKey = '856346fdbba3479482aa';
@@ -60,7 +81,7 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(foodItem.name),
+        title: Text(widget.foodItem.name),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -72,37 +93,48 @@ class DetailPage extends StatelessWidget {
               onPressed: () => FlutterLocalNotification.showNotification(),
               child: const Text("알림 보내기"),
             ),
-            if (foodItem.image_data != null) Image.memory(foodItem.image_data!),
-            if (foodItem.image_url != null && foodItem.image_url!.isNotEmpty)
-              Image.network(foodItem.image_url!),
+            ElevatedButton(
+              onPressed: () {
+                LocalPushNotifications.showSimpleNotification(
+                    title: "일반 푸시 알림 제목",
+                    body: "일반 푸시 알림 바디",
+                    payload: "일반 푸시 알림 데이터");
+              },
+              child: const Text('일반 푸시 알림'),
+            ),
+            if (widget.foodItem.image_data != null)
+              Image.memory(widget.foodItem.image_data!),
+            if (widget.foodItem.image_url != null &&
+                widget.foodItem.image_url!.isNotEmpty)
+              Image.network(widget.foodItem.image_url!),
             const SizedBox(height: 10),
             Text(
-              '식품 이름: ${foodItem.name}',
+              '식품 이름: ${widget.foodItem.name}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Text(
-              '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}',
+              '유통기한: ${widget.foodItem.expiry_date.toIso8601String().split('T')[0]}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
             Text(
-              '종류: ${foodItem.type}',
+              '종류: ${widget.foodItem.type}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
             Text(
-              '알람 주기: ${foodItem.alarm_cycle ?? '설정되지 않음'}',
+              '알람 주기: ${widget.foodItem.alarm_cycle ?? '설정되지 않음'}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
             Text(
-              '등록일: ${foodItem.createdAt.toIso8601String().split('T')[0]}',
+              '등록일: ${widget.foodItem.createdAt.toIso8601String().split('T')[0]}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => _showRecipes(context, foodItem.name),
+              onPressed: () => _showRecipes(context, widget.foodItem.name),
               child: const Text('레시피 보기'),
             ),
           ],
