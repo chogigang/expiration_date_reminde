@@ -53,22 +53,61 @@ class CameraService {
     Iterable<RegExpMatch> matches = dateRegex.allMatches(text);
 
     if (matches.isNotEmpty) {
-      var match = matches.first;
-      String year = match.group(1)!;
-      String month = match.group(2)!;
-      String day = match.group(3)!;
+      RegExpMatch? selectedMatch;
 
-      if (year.length == 2) {
-        year = '20$year';
+      for (var match in matches) {
+        String year = match.group(1)!;
+        if (year.length == 2) {
+          year = '20$year';
+        }
+
+        if (selectedMatch == null) {
+          selectedMatch = match;
+        } else {
+          String selectedYear = selectedMatch.group(1)!;
+          if (selectedYear.length == 2) {
+            selectedYear = '20$selectedYear';
+          }
+
+          if (int.parse(year) > int.parse(selectedYear)) {
+            selectedMatch = match;
+          } else if (int.parse(year) == int.parse(selectedYear)) {
+            String month = match.group(2)!;
+            String selectedMonth = selectedMatch.group(2)!;
+
+            if (int.parse(month) > int.parse(selectedMonth)) {
+              selectedMatch = match;
+            } else if (int.parse(month) == int.parse(selectedMonth)) {
+              String day = match.group(3)!;
+              String selectedDay = selectedMatch.group(3)!;
+
+              if (int.parse(day) > int.parse(selectedDay)) {
+                selectedMatch = match;
+              }
+            }
+          }
+        }
       }
 
-      return '$year-$month-$day';
+      if (selectedMatch != null) {
+        String year = selectedMatch.group(1)!;
+        String month = selectedMatch.group(2)!;
+        String day = selectedMatch.group(3)!;
+
+        if (year.length == 2) {
+          year = '20$year';
+        }
+
+        return '$year-$month-$day';
+      }
     }
     return null;
   }
 
   Future<void> getProduct(
-      String barcode, TextEditingController productNameController) async {
+      String barcode,
+      TextEditingController productNameController,
+      Function(String) updateImageUrl) async {
     var apiKey = '08250c6f4a19422781f0';
     var url = Uri.parse(
         'http://openapi.foodsafetykorea.go.kr/api/$apiKey/I2570/json/1/5/BRCD_NO=$barcode');
@@ -78,13 +117,14 @@ class CameraService {
       var jsonResponse = jsonDecode(response.body);
       var productName = jsonResponse['I2570']['row'][0]['PRDT_NM'];
       productNameController.text = productName;
-      await fetchGoogleImages(productName);
+      await fetchGoogleImages(productName, updateImageUrl);
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
   }
 
-  Future<void> fetchGoogleImages(String keyword) async {
+  Future<void> fetchGoogleImages(
+      String keyword, Function(String) updateImageUrl) async {
     final response = await http
         .get(Uri.parse('https://www.google.com/search?q=$keyword&tbm=isch'));
     if (response.statusCode == 200) {
@@ -96,6 +136,7 @@ class CameraService {
           .toList();
       if (urls.isNotEmpty) {
         imageUrl = urls.first!;
+        updateImageUrl(imageUrl);
       }
     } else {
       throw Exception('Failed to load images');

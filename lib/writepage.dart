@@ -46,15 +46,60 @@ class _WritePageState extends State<WritePage> {
     });
   }
 
-  Widget _buildCircle(
-      Alignment alignment, double size, Color color, Function onPressed) {
-    return _cameraService.buildCircle(
-      alignment,
-      size,
-      color,
-      onPressed,
-      _cameraService.imageUrl,
+  Widget buildCircle(
+      Alignment alignment, double size, Color color, Function onPressed,
+      {Widget? child}) {
+    return Align(
+      alignment: alignment,
+      child: InkWell(
+        onTap: () {
+          onPressed();
+        },
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+            image: imageUrl.isNotEmpty
+                ? DecorationImage(
+                    image: NetworkImage(imageUrl),
+                    fit: BoxFit.cover,
+                  )
+                : null,
+          ),
+          child: child,
+        ),
+      ),
     );
+  }
+
+  Widget buildCircleMiniIcon(
+      Alignment alignment, double size, Color color, Function onPressed,
+      {Widget? child}) {
+    return Align(
+      alignment: alignment,
+      child: InkWell(
+        onTap: () {
+          onPressed();
+        },
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  void updateImageUrl(String url) {
+    setState(() {
+      imageUrl = url;
+    });
   }
 
   @override
@@ -62,7 +107,8 @@ class _WritePageState extends State<WritePage> {
     return Card(
       child: Stack(
         children: <Widget>[
-          _buildCircle(Alignment(0, -0.6), 180, Colors.black, () {}),
+          _cameraService.buildCircle(
+              Alignment(0, -0.6), 180, Colors.black, () {}, imageUrl),
           ElevatedButton(
             onPressed: () async {
               // 카메라 촬영 시작
@@ -70,7 +116,7 @@ class _WritePageState extends State<WritePage> {
             },
             child: const Text("사진 찍기"),
           ),
-          _buildCircle(
+          buildCircleMiniIcon(
             Alignment(0.3, -0.3),
             50,
             Colors.grey,
@@ -84,10 +130,12 @@ class _WritePageState extends State<WritePage> {
               setState(() {
                 if (res is String) {
                   result = res;
-                  _cameraService.getProduct(result, productNameController);
+                  _cameraService.getProduct(
+                      result, productNameController, updateImageUrl);
                 }
               });
             },
+            child: const Icon(Icons.add, color: Colors.white),
           ),
           Align(
             alignment: const Alignment(0, 0.65),

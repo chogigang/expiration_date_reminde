@@ -1,15 +1,16 @@
-import 'package:expiration_date/data/database.dart';
 import 'package:flutter/material.dart';
+import 'package:expiration_date/data/database.dart';
 import 'package:expiration_date/detailpage.dart';
+import 'dart:math';
 
 class ListPage extends StatefulWidget {
   const ListPage({Key? key}) : super(key: key);
 
   @override
-  _ListState createState() => _ListState();
+  _ListPageState createState() => _ListPageState();
 }
 
-class _ListState extends State<ListPage> {
+class _ListPageState extends State<ListPage> {
   List<FooddbData> _foodItems = [];
   String _searchTerm = '';
   String _sortOrder = 'name'; // 기본 정렬 순서
@@ -49,6 +50,19 @@ class _ListState extends State<ListPage> {
         }
       });
     });
+  }
+
+  Color _getGradientColor(DateTime expiryDate) {
+    final now = DateTime.now();
+    final remainingDays = max(0, expiryDate.difference(now).inDays);
+
+    if (remainingDays <= 7) {
+      return Colors.red;
+    } else if (remainingDays <= 14) {
+      return Colors.orange;
+    } else {
+      return Colors.green;
+    }
   }
 
   @override
@@ -119,59 +133,77 @@ class _ListState extends State<ListPage> {
               separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (_, index) {
                 final foodItem = filteredItems[index];
+                final bgColor = _getGradientColor(foodItem.expiry_date);
                 return Card(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.deepPurple,
-                      child: Text(foodItem.name[0].toUpperCase()),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                        stops: [0, 20],
+                        colors: [bgColor, Color.fromARGB(0, 255, 255, 255)],
+                      ),
                     ),
-                    title: Text(foodItem.name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}'),
-                        Text('종류: ${foodItem.type}'), // 종류 추가
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        final confirmDelete = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('삭제 확인'),
-                            content: Text('"${foodItem.name}" 항목을 삭제하시겠습니까?'),
-                            actions: [
-                              TextButton(
-                                child: const Text('취소'),
-                                onPressed: () => Navigator.pop(context, false),
-                              ),
-                              TextButton(
-                                child: const Text('삭제'),
-                                onPressed: () => Navigator.pop(context, true),
-                              ),
-                            ],
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.deepPurple,
+                        child: Text(foodItem.name[0].toUpperCase()),
+                      ),
+                      title: Text(foodItem.name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          Text(
+                            '종류: ${foodItem.type}',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.black),
+                        onPressed: () async {
+                          final confirmDelete = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('삭제 확인'),
+                              content: Text('"${foodItem.name}" 항목을 삭제하시겠습니까?'),
+                              actions: [
+                                TextButton(
+                                  child: const Text('취소'),
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                ),
+                                TextButton(
+                                  child: const Text('삭제'),
+                                  onPressed: () => Navigator.pop(context, true),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirmDelete == true) {
+                            await MyDatabase().deleteFooddb(foodItem);
+                            setState(() {
+                              _foodItems.remove(foodItem); // 삭제 후 목록 갱신
+                            });
+                          }
+                        },
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DetailPage(foodItem: foodItem),
                           ),
                         );
-                        if (confirmDelete == true) {
-                          await MyDatabase().deleteFooddb(foodItem);
-                          setState(() {
-                            _foodItems.remove(foodItem); // 삭제 후 목록 갱신
-                          });
-                        }
                       },
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailPage(foodItem: foodItem),
-                        ),
-                      );
-                    },
                   ),
                 );
               },
