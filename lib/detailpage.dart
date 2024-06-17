@@ -1,10 +1,13 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:expiration_date/data/database.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'module/local_push_notification.dart';
-import 'module/notification.dart';
-import 'recipepage.dart';
+import 'package:html/parser.dart' as parser;
+import 'package:expiration_date/module/local_push_notification.dart';
+import 'package:expiration_date/module/notification.dart';
+import 'package:expiration_date/recipepage.dart';
 
 class DetailPage extends StatefulWidget {
   final FooddbData foodItem;
@@ -22,7 +25,6 @@ class _DetailPageState extends State<DetailPage> {
     super.initState();
   }
 
-  //푸시 알림 스트림에 데이터를 리슨
   void listenNotifications() {
     LocalPushNotifications.notificationStream.stream.listen((String? payload) {
       if (payload != null) {
@@ -44,7 +46,7 @@ class _DetailPageState extends State<DetailPage> {
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        print('JSON Response: $jsonResponse'); // 응답 출력
+        print('JSON Response: $jsonResponse');
 
         final recipes = jsonResponse['COOKRCP01']?['row'];
 
@@ -88,19 +90,18 @@ class _DetailPageState extends State<DetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // 알람 임시 테스트
             TextButton(
               onPressed: () => FlutterLocalNotification.showNotification(),
-              child: const Text("알림 보내기"),
+              child: const Text("Send Notification"),
             ),
             ElevatedButton(
               onPressed: () {
                 LocalPushNotifications.showSimpleNotification(
-                    title: "일반 푸시 알림 제목",
-                    body: "일반 푸시 알림 바디",
-                    payload: "일반 푸시 알림 데이터");
+                    title: "Regular Notification Title",
+                    body: "Regular Notification Body",
+                    payload: "Regular Notification Data");
               },
-              child: const Text('일반 푸시 알림'),
+              child: const Text('Regular Notification'),
             ),
             if (widget.foodItem.image_data != null)
               Image.memory(widget.foodItem.image_data!),
@@ -109,33 +110,33 @@ class _DetailPageState extends State<DetailPage> {
               Image.network(widget.foodItem.image_url!),
             const SizedBox(height: 10),
             Text(
-              '식품 이름: ${widget.foodItem.name}',
+              'Food Name: ${widget.foodItem.name}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Text(
-              '유통기한: ${widget.foodItem.expiry_date.toIso8601String().split('T')[0]}',
+              'Expiry Date: ${widget.foodItem.expiry_date.toIso8601String().split('T')[0]}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
             Text(
-              '종류: ${widget.foodItem.type}',
+              'Type: ${widget.foodItem.type}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
             Text(
-              '알람 주기: ${widget.foodItem.alarm_cycle ?? '설정되지 않음'}',
+              'Alarm Cycle: ${widget.foodItem.alarm_cycle ?? 'Not set'}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
             Text(
-              '등록일: ${widget.foodItem.createdAt.toIso8601String().split('T')[0]}',
+              'Registration Date: ${widget.foodItem.createdAt.toIso8601String().split('T')[0]}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => _showRecipes(context, widget.foodItem.name),
-              child: const Text('레시피 보기'),
+              child: const Text('View Recipes'),
             ),
           ],
         ),

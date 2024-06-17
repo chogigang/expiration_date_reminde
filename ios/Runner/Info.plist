@@ -2,138 +2,97 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CADisableMinimumFrameDurationOnPhone</key>
-    <true/>
-    <key>CFBundleDevelopmentRegion</key>
-    <string>$(DEVELOPMENT_LANGUAGE)</string>
-    <key>CFBundleDisplayName</key>
-    <string>Expiration Date Reminde</string>
-    <key>CFBundleExecutable</key>
-    <string>$(EXECUTABLE_NAME)</string>
-    <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-    <key>CFBundleInfoDictionaryVersion</key>
-    <string>6.0</string>
-    <key>CFBundleName</key>
-    <string>expiration_date_reminde</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>$(FLUTTER_BUILD_NAME)</string>
-    <key>CFBundleSignature</key>
-    <string>????</string>
-    <key>CFBundleVersion</key>
-    <string>$(FLUTTER_BUILD_NUMBER)</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>kakaokompassauth</string>
-        <string>kakaolink</string>
-    </array>
-    <key>LSRequiresIPhoneOS</key>
-    <true/>
-    <key>UIApplicationSupportsIndirectInputEvents</key>
-    <true/>
-    <key>UILaunchStoryboardName</key>
-    <string>LaunchScreen</string>
-    <key>UIMainStoryboardFile</key>
-    <string>Main</string>
-    <key>UIStatusBarStyle</key>
-    <string></string>
-    <key>UISupportedInterfaceOrientations</key>
-    <array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <key>UISupportedInterfaceOrientations~ipad</key>
-    <array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationPortraitUpsideDown</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <!-- 네트워크 설정 -->
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>kakaof97d27c81aa369408064bb7c68f9fd1e</string>
-            </array>
-        </dict>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>com.googleusercontent.apps.299718454090-7k1lfl0t6c781hng1pccvhddlie6ukkc</string>
-            </array>
-        </dict>
-    </array>
-    <!-- Permission options for the `location` group -->
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Need location when in use</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Always and when in use!</string>
-    <key>NSLocationUsageDescription</key>
-    <string>Older devices need location.</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Can I have location always?</string>
-    <!-- Permission options for the `mediaLibrary` group -->
-    <!--
-    <key>NSAppleMusicUsageDescription</key>
-    <string>Music!</string>
-    <key>kTCCServiceMediaLibrary</key>
-    <string>media</string>
-    -->
-    <!-- Permission options for the `calendar` group -->
-    <key>NSCalendarsUsageDescription</key>
-    <string>제품의 유통기한 날짜를 지정하기 위해,해당 날짜근처에 알람을 보내야 하기때문에 날짜 정보가 필요합니다.</string>
-    <!-- Permission options for the `camera` group -->
-    <key>NSCameraUsageDescription</key>
-    <string>바코드 인식,카매라 문자인식이 필요합니다.</string>
-    <!-- Permission options for the `contacts` group -->
-    <!--
-    <key>NSContactsUsageDescription</key>
-    <string>contacts</string>
-    -->
-    <!-- Permission options for the `microphone` group -->
-    <!--
-    <key>NSMicrophoneUsageDescription</key>
-    <string>microphone</string>
-    -->
-    <!-- Permission options for the `speech` group -->
-    <!--
-    <key>NSSpeechRecognitionUsageDescription</key>
-    <string>speech</string>
-    -->
-    <!-- Permission options for the `sensors` group -->
-    <!--
-    <key>NSMotionUsageDescription</key>
-    <string>motion</string>
-    -->
-    <!-- Permission options for the `photos` group -->
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>해당 음식,제품의 사진을 저장해서 정보 페이지에서 사진을 보여주기위해 필요합니다.</string>
-    <!-- Permission options for the `reminders` group -->
-    <key>NSRemindersUsageDescription</key>
-    <string>해당 유통기한 날짜가 임박할때 알람을 사용해 사용자한태 알리기 위해 필요합니다.</string>
-    <!-- Permission options for the `bluetooth` -->
-    <!--
-    <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>bluetooth</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>bluetooth</string>
-    -->
-    <!-- Permission options for the `appTrackingTransparency` -->
-    <key>NSUserTrackingUsageDescription</key>
-    <string>로그인, sqlite 정보를 파이어베이스에 저장하기 위해 필요합니다. 이는 핸드폰 기종이 바뀌어도 유저의 해당 db정보를 유지하기위함입니다.</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Expiration Date Reminde</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>expiration_date_reminde</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakaof97d27c81aa369408064bb7c68f9fd1e</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.299718454090-7k1lfl0t6c781hng1pccvhddlie6ukkc</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kakaokompassauth</string>
+		<string>kakaolink</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>제품의 유통기한 날짜를 지정하기 위해,해당 날짜근처에 알람을 보내야 하기때문에 날짜 정보가 필요합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>바코드 인식,카매라 문자인식이 필요합니다.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Always and when in use!</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Can I have location always?</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Older devices need location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Need location when in use</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>해당 음식,제품의 사진을 저장해서 정보 페이지에서 사진을 보여주기위해 필요합니다.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>해당 유통기한 날짜가 임박할때 알람을 사용해 사용자한태 알리기 위해 필요합니다.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>로그인, sqlite 정보를 파이어베이스에 저장하기 위해 필요합니다. 이는 핸드폰 기종이 바뀌어도 유저의 해당 db정보를 유지하기위함입니다.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIStatusBarStyle</key>
+	<string></string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 </dict>
 </plist>

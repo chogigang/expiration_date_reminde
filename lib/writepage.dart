@@ -19,7 +19,7 @@ class _WritePageState extends State<WritePage> {
   final alarmCycleController = TextEditingController();
   final typeController = TextEditingController();
   String imageUrl = ''; // 이미지 url
-  Uint8List? imageData; // 이미지 바이너리 데이터
+  Uint8List? imageData; // 사진 찍기에서 찍은 이미지 바이너리 데이터
 
   final CameraService _cameraService = CameraService();
 
@@ -40,8 +40,16 @@ class _WritePageState extends State<WritePage> {
   Future<void> _startCameraPreview(BuildContext context) async {
     await _cameraService.startCameraPreview(context, (imageData, date) {
       setState(() {
-        expiryDateController.text = date ?? "Date not found";
         this.imageData = imageData;
+        imageUrl = ''; // 사진 찍기에서 찍은 이미지가 있을 때, 이미지 URL 초기화
+      });
+    });
+  }
+
+  Future<void> _startExpiryDateCameraPreview(BuildContext context) async {
+    await _cameraService.startCameraPreview(context, (imageData, date) {
+      setState(() {
+        expiryDateController.text = date ?? "Date not found";
       });
     });
   }
@@ -66,7 +74,12 @@ class _WritePageState extends State<WritePage> {
                     image: NetworkImage(imageUrl),
                     fit: BoxFit.cover,
                   )
-                : null,
+                : imageData != null
+                    ? DecorationImage(
+                        image: MemoryImage(imageData!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
           ),
           child: child,
         ),
@@ -99,6 +112,7 @@ class _WritePageState extends State<WritePage> {
   void updateImageUrl(String url) {
     setState(() {
       imageUrl = url;
+      imageData = null; // 이미지 URL이 업데이트되면, 이미지 바이너리 데이터 초기화
     });
   }
 
@@ -107,8 +121,7 @@ class _WritePageState extends State<WritePage> {
     return Card(
       child: Stack(
         children: <Widget>[
-          _cameraService.buildCircle(
-              Alignment(0, -0.6), 180, Colors.black, () {}, imageUrl),
+          buildCircle(Alignment(0, -0.6), 180, Colors.black, () {}),
           ElevatedButton(
             onPressed: () async {
               // 카메라 촬영 시작
@@ -181,7 +194,7 @@ class _WritePageState extends State<WritePage> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.camera_alt),
-                        onPressed: () => _startCameraPreview(context),
+                        onPressed: () => _startExpiryDateCameraPreview(context),
                       ),
                     ],
                   ),
@@ -249,6 +262,10 @@ class _WritePageState extends State<WritePage> {
                       expiryDateController.clear();
                       alarmCycleController.clear();
                       typeController.clear();
+                      setState(() {
+                        imageData = null; // 추가 후 이미지 바이너리 데이터 초기화
+                        imageUrl = ''; // 추가 후 이미지 URL 초기화
+                      });
                     },
                     child: const Text("등록하기"),
                   ),

@@ -32,19 +32,25 @@ class CameraService {
 
   Future<void> takePicture(Function(Uint8List?, String?) callback) async {
     if (_cameraController != null && _cameraController!.value.isInitialized) {
-      final XFile file = await _cameraController!.takePicture();
-      final inputImage = InputImage.fromFilePath(file.path);
-      final textRecognizer =
-          TextRecognizer(script: TextRecognitionScript.latin);
+      try {
+        final image = await _cameraController!.takePicture();
+        final imagePath = image.path;
+        final imageData = await image.readAsBytes();
 
-      final RecognizedText recognizedText =
-          await textRecognizer.processImage(inputImage);
-      String? formattedDate = _formatDate(recognizedText.text);
+        final inputImage = InputImage.fromFilePath(imagePath);
 
-      Uint8List imageData = await file.readAsBytes();
-      callback(imageData, formattedDate);
+        final textRecognizer =
+            TextRecognizer(script: TextRecognitionScript.latin);
+        final recognizedText = await textRecognizer.processImage(inputImage);
+        String? formattedDate = _formatDate(recognizedText.text);
 
-      textRecognizer.close();
+        callback(imageData, formattedDate);
+
+        textRecognizer.close();
+      } catch (e) {
+        print('Error capturing image: $e');
+        callback(null, null);
+      }
     }
   }
 
