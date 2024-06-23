@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:expiration_date/data/database.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-import 'package:expiration_date/module/cameraservice.dart';
+import 'package:expiration_date/service/cameraservice.dart';
 import 'package:drift/drift.dart' as drift;
 
 class WritePage extends StatefulWidget {

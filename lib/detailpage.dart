@@ -5,8 +5,8 @@ import 'package:flutter/material.dart'; // Flutter의 주요 UI 라이브러리
 import 'package:expiration_date/data/database.dart'; // 데이터베이스 관련 클래스 임포트
 import 'package:http/http.dart' as http; // HTTP 요청을 위한 라이브러리
 import 'package:html/parser.dart' as parser; // HTML 파싱을 위한 라이브러리
-import 'package:expiration_date/module/local_push_notification.dart'; // 로컬 푸시 알림 모듈 임포트
-import 'package:expiration_date/module/notification.dart'; // 알림 관련 모듈 임포트
+import 'package:expiration_date/service/local_push_notification.dart'; // 로컬 푸시 알림 모듈 임포트
+import 'package:expiration_date/service/notification.dart'; // 알림 관련 모듈 임포트
 import 'package:expiration_date/recipepage.dart'; // 레시피 페이지 관련 클래스 임포트
 
 // DetailPage 클래스 정의, StatefulWidget을 상속받음

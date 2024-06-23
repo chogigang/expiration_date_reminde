@@ -1,14 +1,14 @@
 import 'package:expiration_date/data/database.dart';
 import 'package:expiration_date/homepage.dart';
-import 'package:expiration_date/module/notification.dart';
+import 'package:expiration_date/service/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart' as kakao;
-import 'module/firebase_options.dart';
+import 'service/firebase_options.dart';
 import 'package:get_it/get_it.dart';
 
-import 'module/local_push_notification.dart';
+import 'service/local_push_notification.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
