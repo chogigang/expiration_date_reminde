@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
                 <data android:host="oauth"
-                        android:scheme="kakao$f97d27c81aa369408064bb7c68f9fd1e" />
+                        android:scheme="kakaof97d27c81aa369408064bb7c68f9fd1e" />
             </intent-filter>
         </activity>
 
@@ -69,7 +69,9 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> 
+    <!-- 인터넷 사용 권한 설정-->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Queries -->
     <queries>

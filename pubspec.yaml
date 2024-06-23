@@ -38,7 +38,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   firebase_core: ^2.27.0
-  kakao_flutter_sdk: ^1.9.1+2
+  kakao_flutter_sdk: ^1.9.2
   firebase_auth: ^4.19.0
   http: ^1.2.1
   html: ^0.15.4

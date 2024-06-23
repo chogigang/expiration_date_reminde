@@ -233,7 +233,7 @@ PODS:
   - GTMSessionFetcher/Core (3.4.1)
   - GTMSessionFetcher/Full (3.4.1):
     - GTMSessionFetcher/Core
-  - kakao_flutter_sdk_common (1.9.1-2):
+  - kakao_flutter_sdk_common (1.9.3):
     - Flutter
   - leveldb-library (1.22.5)
   - MLImage (1.0.0-beta5)
@@ -562,7 +562,7 @@ SPEC CHECKSUMS:
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 8000756fc1c19d2e5697b90311f7832d2e33f6cd
-  kakao_flutter_sdk_common: ac22d95194585407db3fbc5f838d67ced11ea0f0
+  kakao_flutter_sdk_common: 80c3308f209f3d6cc74e338ffea3a51d17501d77
   leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
   MLImage: 1824212150da33ef225fbd3dc49f184cf611046c
   MLKitBarcodeScanning: 10ca0845a6d15f2f6e911f682a1998b68b973e8b
