@@ -1,5 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+// 로컬 알람 담당
+
 // 알람
 class FlutterLocalNotification {
   FlutterLocalNotification._();
