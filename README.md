@@ -2,11 +2,11 @@
 
 A new Flutter project.
 
-flutter sdk :3.22.1,
-dart sdk    :3.4.1,
+flutter sdk :3.24.3,
+dart sdk    :3.5.3,
         jdk :17,
      kotlin :1.9,
-kakao_flutter_sdk: ^1.9.1+2,         
+kakao_flutter_sdk: ^1.9.1.2,         
 firebase_core: ^2.27.0,
 drift: ^1.7.1
 sqlite3_flutter_libs: ^0.5.21
@@ -14,6 +14,7 @@ sqlite3_flutter_libs: ^0.5.21
 
 
 ## Getting Started
+9월 22일 ios 18 로 버전 충돌발생 flutter , api 버전 변경 
 5월 30일 레시피 api 사용
 5월 22일 google_ml_kit 적용 (시도중)
 5월 16일 orm drift 적용 (20일날 완료)
@@ -21,6 +22,7 @@ sqlite3_flutter_libs: ^0.5.21
 4월 5일 파이어베이스 연동
 3월 25일 카카오 로그인
 3월 26일 바코드 스캔 
+
 
 
 
