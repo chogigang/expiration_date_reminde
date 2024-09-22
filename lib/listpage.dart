@@ -65,6 +65,25 @@ class _ListPageState extends State<ListPage> {
     }
   }
 
+  // DetailPage를 BottomSheet로 보여주는 함수
+  void _showDetailBottomSheet(BuildContext context, FooddbData foodItem) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.7,
+          maxChildSize: 0.95,
+          minChildSize: 0.4,
+          builder: (_, scrollController) {
+            return DetailPage(foodItem: foodItem);
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredItems = _foodItems.where((item) {
@@ -127,7 +146,7 @@ class _ListPageState extends State<ListPage> {
               ),
             ),
           ),
-          // 리시트 본체
+          // 리스트 본체
           Expanded(
             child: ListView.separated(
               itemCount: filteredItems.length,
@@ -182,7 +201,7 @@ class _ListPageState extends State<ListPage> {
                           ),
                         ],
                       ),
-                      //삭제 버튼 처리
+                      // 삭제 버튼 처리
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.black),
                         onPressed: () async {
@@ -213,13 +232,8 @@ class _ListPageState extends State<ListPage> {
                         },
                       ),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                DetailPage(foodItem: foodItem),
-                          ),
-                        );
+                        // 기존 Navigator.push 대신 Adaptive BottomSheet 사용
+                        _showDetailBottomSheet(context, foodItem);
                       },
                     ),
                   ),
