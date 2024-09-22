@@ -127,6 +127,7 @@ class _ListPageState extends State<ListPage> {
               ),
             ),
           ),
+          // 리시트 본체
           Expanded(
             child: ListView.separated(
               itemCount: filteredItems.length,
@@ -147,24 +148,41 @@ class _ListPageState extends State<ListPage> {
                       ),
                     ),
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.deepPurple,
-                        child: Text(foodItem.name[0].toUpperCase()),
-                      ),
+                      // 이미지 처리 부분
+                      leading: foodItem.image_data != null
+                          ? Image.memory(
+                              foodItem.image_data!,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          : foodItem.image_url != null &&
+                                  foodItem.image_url!.isNotEmpty
+                              ? Image.network(
+                                  foodItem.image_url!,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                )
+                              : CircleAvatar(
+                                  backgroundColor: Colors.deepPurple,
+                                  child: Text(foodItem.name[0].toUpperCase()),
+                                ),
                       title: Text(foodItem.name),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '유통기한: ${foodItem.expiry_date.toIso8601String().split('T')[0]}',
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                           Text(
                             '종류: ${foodItem.type}',
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ],
                       ),
+                      //삭제 버튼 처리
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.black),
                         onPressed: () async {
