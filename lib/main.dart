@@ -7,12 +7,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart' as kakao;
 import 'service/firebase_options.dart';
 import 'package:get_it/get_it.dart';
-
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'service/local_push_notification.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+  Gemini.init(apiKey: 'AIzaSyAHeCeNvPxjzls-jt2ZrQkGxUjdcU91K-Y');
+  runApp(const MyApp());
   // 드리프트 초기화
   final mydatabase = MyDatabase(); // 데이터 베이스 생성
 

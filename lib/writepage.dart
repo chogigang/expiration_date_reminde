@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:expiration_date/service/cameraservice.dart';
 import 'package:drift/drift.dart' as drift;
+import 'package:flutter_gemini/flutter_gemini.dart'; // Gemini 패키지 추가
 
 class WritePage extends StatefulWidget {
   const WritePage({Key? key}) : super(key: key);
@@ -42,6 +43,9 @@ class _WritePageState extends State<WritePage> {
       setState(() {
         this.imageData = imageData;
         imageUrl = ''; // 사진 찍기에서 찍은 이미지가 있을 때, 이미지 URL 초기화
+
+        // Gemini API를 호출하여 이미지에서 음식 이름을 인식
+        getFoodNameFromGemini(imageData!);
       });
     });
   }
@@ -59,6 +63,26 @@ class _WritePageState extends State<WritePage> {
       imageUrl = url;
       imageData = null; // 이미지 URL이 업데이트되면, 이미지 바이너리 데이터 초기화
     });
+  }
+
+  // Gemini API를 사용하여 이미지에서 음식 이름을 가져오는 메서드 추가
+  Future<void> getFoodNameFromGemini(Uint8List imageData) async {
+    try {
+      final gemini = Gemini.instance;
+      final response = await gemini.textAndImage(
+        text: "이 음식의 이름이 무엇인지, 단답형으로, 한글로 이름만 딱 말해줘", // 텍스트 프롬프트 (선택 사항)
+        images: [imageData],
+      );
+      String? foodName = response?.content?.parts?.last.text;
+
+      if (foodName != null) {
+        setState(() {
+          productNameController.text = foodName; // 인식된 음식 이름 설정
+        });
+      }
+    } catch (e) {
+      print('Error during food recognition: $e');
+    }
   }
 
   @override
