@@ -65,9 +65,8 @@ class _ListPageState extends State<ListPage> {
     }
   }
 
-  // DetailPage를 BottomSheet로 보여주는 함수
-  void _showDetailBottomSheet(BuildContext context, FooddbData foodItem) {
-    showModalBottomSheet(
+  void _showDetailBottomSheet(BuildContext context, FooddbData foodItem) async {
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
@@ -77,11 +76,12 @@ class _ListPageState extends State<ListPage> {
           maxChildSize: 0.95,
           minChildSize: 0.4,
           builder: (_, scrollController) {
-            return DetailPage(foodItem: foodItem);
+            return DetailPage(initialFoodItem: foodItem);
           },
         );
       },
     );
+    _loadFoodItems(); // 리스트 새로고침
   }
 
   @override
@@ -146,7 +146,6 @@ class _ListPageState extends State<ListPage> {
               ),
             ),
           ),
-          // 리스트 본체
           Expanded(
             child: ListView.separated(
               itemCount: filteredItems.length,
@@ -167,7 +166,6 @@ class _ListPageState extends State<ListPage> {
                       ),
                     ),
                     child: ListTile(
-                      // 이미지 처리 부분
                       leading: foodItem.image_data != null
                           ? Image.memory(
                               foodItem.image_data!,
@@ -201,7 +199,6 @@ class _ListPageState extends State<ListPage> {
                           ),
                         ],
                       ),
-                      // 삭제 버튼 처리
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.black),
                         onPressed: () async {
@@ -232,7 +229,6 @@ class _ListPageState extends State<ListPage> {
                         },
                       ),
                       onTap: () {
-                        // 기존 Navigator.push 대신 Adaptive BottomSheet 사용
                         _showDetailBottomSheet(context, foodItem);
                       },
                     ),

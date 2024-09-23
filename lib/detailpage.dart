@@ -1,45 +1,42 @@
-import 'dart:convert'; // JSON 인코딩 및 디코딩을 위한 라이브러리
-import 'dart:typed_data'; // 바이트 데이터 처리를 위한 라이브러리
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:expiration_date/UpdateFoodItem.dart';
+import 'package:flutter/material.dart';
+import 'package:expiration_date/data/database.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
+import 'package:expiration_date/service/local_push_notification.dart';
+import 'package:expiration_date/service/notification.dart';
+import 'package:expiration_date/recipepage.dart';
 
-import 'package:flutter/material.dart'; // Flutter의 주요 UI 라이브러리
-import 'package:expiration_date/data/database.dart'; // 데이터베이스 관련 클래스 임포트
-import 'package:http/http.dart' as http; // HTTP 요청을 위한 라이브러리
-import 'package:html/parser.dart' as parser; // HTML 파싱을 위한 라이브러리
-import 'package:expiration_date/service/local_push_notification.dart'; // 로컬 푸시 알림 모듈 임포트
-import 'package:expiration_date/service/notification.dart'; // 알림 관련 모듈 임포트
-import 'package:expiration_date/recipepage.dart'; // 레시피 페이지 관련 클래스 임포트
-
-// DetailPage 클래스 정의, StatefulWidget을 상속받음
 class DetailPage extends StatefulWidget {
-  final FooddbData foodItem; // foodItem을 DetailPage 생성자에서 받음
+  final FooddbData initialFoodItem;
 
-  const DetailPage({Key? key, required this.foodItem}) : super(key: key);
+  const DetailPage({Key? key, required this.initialFoodItem}) : super(key: key);
 
   @override
-  _DetailPageState createState() =>
-      _DetailPageState(); // _DetailPageState 클래스 생성
+  _DetailPageState createState() => _DetailPageState();
 }
 
-// _DetailPageState 클래스 정의
 class _DetailPageState extends State<DetailPage> {
+  late FooddbData _foodItem;
+
   @override
   void initState() {
-    listenNotifications(); // 알림 리스너 설정
-    super.initState(); // 부모 클래스의 initState 호출
+    super.initState();
+    _foodItem = widget.initialFoodItem;
+    listenNotifications();
   }
 
-  // 알림 수신 리스너 설정
   void listenNotifications() {
     LocalPushNotifications.notificationStream.stream.listen((String? payload) {
       if (payload != null) {
-        print('Received payload: $payload'); // 수신된 페이로드 출력
-        Navigator.pushNamed(context, '/message',
-            arguments: payload); // 특정 경로로 네비게이트
+        print('Received payload: $payload');
+        Navigator.pushNamed(context, '/message', arguments: payload);
       }
     });
   }
 
-  // 레시피 정보를 가져와서 화면에 표시하는 메서드
   Future<void> _showRecipes(BuildContext context, String searchQuery) async {
     final apiKey = '856346fdbba3479482aa'; // API 키
     final url = Uri.parse(
@@ -88,24 +85,21 @@ class _DetailPageState extends State<DetailPage> {
     }
   }
 
-  // 위젯 빌드 메서드
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.foodItem.name), // 앱바에 음식 이름 표시
+        title: Text(_foodItem.name),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // 알림 버튼
             TextButton(
               onPressed: () => FlutterLocalNotification.showNotification(),
               child: const Text("알람버튼"),
             ),
-            // 알람 버튼 2
             ElevatedButton(
               onPressed: () {
                 LocalPushNotifications.showSimpleNotification(
@@ -115,47 +109,57 @@ class _DetailPageState extends State<DetailPage> {
               },
               child: const Text('알람 버튼 2'),
             ),
-            // 이미지가 있으면 표시
-            if (widget.foodItem.image_data != null)
-              Image.memory(widget.foodItem.image_data!),
-            if (widget.foodItem.image_url != null &&
-                widget.foodItem.image_url!.isNotEmpty)
-              Image.network(widget.foodItem.image_url!),
+            if (_foodItem.image_data != null)
+              Image.memory(_foodItem.image_data!),
+            if (_foodItem.image_url != null && _foodItem.image_url!.isNotEmpty)
+              Image.network(_foodItem.image_url!),
             const SizedBox(height: 10),
-            // 음식 이름 표시
             Text(
-              '이름 : ${widget.foodItem.name}',
+              '이름 : ${_foodItem.name}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            // 유통기한 표시
             Text(
-              '날짜 : ${widget.foodItem.expiry_date.toIso8601String().split('T')[0]}',
+              '유통기한 날짜 : ${_foodItem.expiry_date.toIso8601String().split('T')[0]}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
-            // 음식 종류 표시
             Text(
-              '종류 : ${widget.foodItem.type}',
+              '종류 : ${_foodItem.type}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
-            // 알람 주기 표시
             Text(
-              '알람 주기 : ${widget.foodItem.alarm_cycle ?? 'Not set'}',
+              '알람 주기 : ${_foodItem.alarm_cycle ?? 'Not set'}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),
-            // 생성 날짜 표시
             Text(
-              '유통기한 날짜 : ${widget.foodItem.createdAt.toIso8601String().split('T')[0]}',
+              '작성 날짜 : ${_foodItem.createdAt.toIso8601String().split('T')[0]}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
-            // 레시피 보기 버튼
             ElevatedButton(
-              onPressed: () => _showRecipes(context, widget.foodItem.name),
+              onPressed: () => _showRecipes(context, _foodItem.name),
               child: const Text('레시피 보기'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UpdateFoodItem(foodItem: _foodItem),
+                  ),
+                );
+                if (result == true) {
+                  // 수정이 완료되면 리스트 페이지 새로 고침
+                  setState(() {
+                    // UI 업데이트
+                  });
+                }
+              },
+              child: const Text('수정하기'),
             ),
           ],
         ),

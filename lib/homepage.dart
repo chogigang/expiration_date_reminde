@@ -31,7 +31,7 @@ class _HomePage extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ListPage()), //화면 전환
+                          builder: (context) => ListPage()), //화면 전환
                     );
                   },
                   child: const Text("모아보기"),
