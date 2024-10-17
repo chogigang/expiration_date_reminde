@@ -149,32 +149,33 @@ class _WritePageState extends State<WritePage> {
               ],
             ),
           ),
-          // 사진 찍기 버튼
-          Positioned(
-            top: 250,
-            left: 120,
-            child: ElevatedButton(
-              onPressed: () async {
-                // 카메라 촬영 시작
-                await _startCameraPreview(context);
-              },
-              child: const Text("사진 찍기"),
-            ),
-          ),
+          // 식품이름 입력 필드와 사진 아이콘 버튼
           Align(
             alignment: const Alignment(0, 0.65),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                // 식품이름 입력 필드
                 Padding(
                   padding: const EdgeInsets.only(),
-                  child: TextField(
-                    controller: productNameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: '식품이름',
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: productNameController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '식품이름',
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.camera_alt),
+                        onPressed: () async {
+                          // 사진 찍기 기능 시작
+                          await _startCameraPreview(context);
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 // 종류 입력 필드
