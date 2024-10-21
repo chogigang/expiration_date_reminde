@@ -21,20 +21,20 @@ class LocalPushNotifications {
   //플러그인 초기화
   static Future init() async {
     //Android
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
     //ios
-    const DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings();
+    DarwinInitializationSettings initializationSettingsDarwin =
+        const DarwinInitializationSettings();
     //Linux
-    const LinuxInitializationSettings initializationSettingsLinux =
-        LinuxInitializationSettings(defaultActionName: 'Open notification');
+    LinuxInitializationSettings initializationSettingsLinux =
+        const LinuxInitializationSettings(
+            defaultActionName: 'Open notification');
 
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsDarwin,
-            linux: initializationSettingsLinux);
+    InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsDarwin,
+        linux: initializationSettingsLinux);
 
     //안드로이드 푸시 알림 권한 요청
     if (Platform.isAndroid) {

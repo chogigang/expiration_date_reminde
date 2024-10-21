@@ -48,7 +48,7 @@ class CameraService {
         final recognizedText =
             await textRecognizer.processImage(inputImage); // 이미지에서 텍스트 인식
         String? formattedDate =
-            _formatDate(recognizedText.text); // 인식된 텍스트에서 날짜 추출
+            formatDate(recognizedText.text); // 인식된 텍스트에서 날짜 추출
 
         callback(imageData, formattedDate); // 콜백 호출
 
@@ -60,62 +60,56 @@ class CameraService {
     }
   }
 
-  // 인식된 텍스트에서 날짜를 추출하는 메서드
-  String? _formatDate(String text) {
-    RegExp dateRegex =
-        RegExp(r'\b(\d{2}|\d{4})[.](\d{1,2})[.](\d{1,2})\b'); // 날짜 정규식 패턴
-    Iterable<RegExpMatch> matches = dateRegex.allMatches(text); // 정규식 매칭
+  String? formatDate(String text) {
+    // 입력받은 전체 텍스트를 줄바꿈으로 분리
+    List<String> lines = text.split(RegExp(r'\r?\n')); // 줄바꿈으로 텍스트 분리
+    String? latestDate;
 
-    if (matches.isNotEmpty) {
-      RegExpMatch? selectedMatch;
+    RegExp dateRegexDouble =
+        RegExp(r'(\d{2}|\d{4})[.](\d{1,2})[.](\d{1,2})'); // yy.mm.dd 형식
+    RegExp dateRegexSingle = RegExp(r'(\d{1,2})[.](\d{1,2})'); // mm.dd 형식
 
-      for (var match in matches) {
+    for (String line in lines) {
+      line = line.trim(); // 각 줄에서 공백 제거
+      print("Processing line: $line"); // 디버깅을 위해 현재 줄 출력
+
+      // yy.mm.dd 형식인지 확인
+      if (dateRegexDouble.hasMatch(line)) {
+        RegExpMatch match = dateRegexDouble.firstMatch(line)!;
         String year = match.group(1)!;
+        String month = match.group(2)!;
+        String day = match.group(3)!;
+
         if (year.length == 2) {
           year = '20$year'; // 연도를 4자리로 변환
         }
 
-        if (selectedMatch == null) {
-          selectedMatch = match;
-        } else {
-          String selectedYear = selectedMatch.group(1)!;
-          if (selectedYear.length == 2) {
-            selectedYear = '20$selectedYear'; // 연도를 4자리로 변환
-          }
+        String formattedDate =
+            '$year-$month-${day.padLeft(2, '0')}'; // 날짜 형식으로 변환
+        print("Parsed yy.mm.dd: $formattedDate"); // 변환된 날짜 출력
 
-          if (int.parse(year) > int.parse(selectedYear)) {
-            selectedMatch = match;
-          } else if (int.parse(year) == int.parse(selectedYear)) {
-            String month = match.group(2)!;
-            String selectedMonth = selectedMatch.group(2)!;
-
-            if (int.parse(month) > int.parse(selectedMonth)) {
-              selectedMatch = match;
-            } else if (int.parse(month) == int.parse(selectedMonth)) {
-              String day = match.group(3)!;
-              String selectedDay = selectedMatch.group(3)!;
-
-              if (int.parse(day) > int.parse(selectedDay)) {
-                selectedMatch = match;
-              }
-            }
-          }
+        if (latestDate == null || formattedDate.compareTo(latestDate) > 0) {
+          latestDate = formattedDate; // 최신 날짜 갱신
         }
       }
+      // mm.dd 형식인지 확인
+      else if (dateRegexSingle.hasMatch(line)) {
+        RegExpMatch match = dateRegexSingle.firstMatch(line)!;
+        String month = match.group(1)!;
+        String day = match.group(2)!;
 
-      if (selectedMatch != null) {
-        String year = selectedMatch.group(1)!;
-        String month = selectedMatch.group(2)!;
-        String day = selectedMatch.group(3)!;
+        String year = DateTime.now().year.toString(); // 현재 연도를 가져옴
+        String formattedDate =
+            '$year-$month-${day.padLeft(2, '0')}'; // 기본 연도 사용
+        print("Parsed mm.dd: $formattedDate"); // 변환된 날짜 출력
 
-        if (year.length == 2) {
-          year = '20$year'; // 연도를 4자리로 변환
+        if (latestDate == null || formattedDate.compareTo(latestDate) > 0) {
+          latestDate = formattedDate; // 최신 날짜 갱신
         }
-
-        return '$year-$month-$day'; // 날짜 형식으로 반환
       }
     }
-    return null; // 날짜가 없는 경우 null 반환
+
+    return latestDate; // 최신 날짜 반환
   }
 
   // 바코드로 제품 정보를 가져오는 메서드

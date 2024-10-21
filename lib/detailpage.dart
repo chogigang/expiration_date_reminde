@@ -8,6 +8,7 @@ import 'package:html/parser.dart' as parser;
 import 'package:expiration_date/service/local_push_notification.dart';
 import 'package:expiration_date/service/notification.dart';
 import 'package:expiration_date/recipepage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class DetailPage extends StatefulWidget {
   final FooddbData initialFoodItem;
@@ -25,7 +26,14 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     super.initState();
     _foodItem = widget.initialFoodItem;
+    _initializeNotifications(); // 알림 초기화
     listenNotifications();
+  }
+
+  // 알림 초기화
+  Future<void> _initializeNotifications() async {
+    await FlutterLocalNotification.init(); // 알림 초기화
+    FlutterLocalNotification.requestNotificationPermission(); // 권한 요청
   }
 
   void listenNotifications() {
@@ -100,15 +108,15 @@ class _DetailPageState extends State<DetailPage> {
               onPressed: () => FlutterLocalNotification.showNotification(),
               child: const Text("알람버튼"),
             ),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     LocalPushNotifications.showSimpleNotification(
-            //         title: "유통기한 알람",
-            //         body: "유통기한 임박!",
-            //         payload: "Regular Notification Data");
-            //   },
-            //   child: const Text('알람 버튼 2'),
-            // ),
+            ElevatedButton(
+              onPressed: () {
+                LocalPushNotifications.showSimpleNotification(
+                    title: "유통기한 알람",
+                    body: "유통기한 임박!",
+                    payload: "Regular Notification Data");
+              },
+              child: const Text('알람 버튼 2'),
+            ),
             if (_foodItem.image_data != null)
               Image.memory(_foodItem.image_data!),
             if (_foodItem.image_url != null && _foodItem.image_url!.isNotEmpty)
