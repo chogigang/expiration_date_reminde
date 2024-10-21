@@ -100,15 +100,15 @@ class _DetailPageState extends State<DetailPage> {
               onPressed: () => FlutterLocalNotification.showNotification(),
               child: const Text("알람버튼"),
             ),
-            ElevatedButton(
-              onPressed: () {
-                LocalPushNotifications.showSimpleNotification(
-                    title: "유통기한 알람",
-                    body: "유통기한 임박!",
-                    payload: "Regular Notification Data");
-              },
-              child: const Text('알람 버튼 2'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     LocalPushNotifications.showSimpleNotification(
+            //         title: "유통기한 알람",
+            //         body: "유통기한 임박!",
+            //         payload: "Regular Notification Data");
+            //   },
+            //   child: const Text('알람 버튼 2'),
+            // ),
             if (_foodItem.image_data != null)
               Image.memory(_foodItem.image_data!),
             if (_foodItem.image_url != null && _foodItem.image_url!.isNotEmpty)

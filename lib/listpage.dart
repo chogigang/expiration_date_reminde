@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:expiration_date/data/database.dart';
 import 'package:expiration_date/detailpage.dart';
+import 'package:expiration_date/writepage.dart'; // WritePage import
 import 'dart:math';
 
 class ListPage extends StatefulWidget {
@@ -238,6 +239,17 @@ class _ListPageState extends State<ListPage> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const WritePage(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

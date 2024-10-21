@@ -1,5 +1,6 @@
 import 'package:expiration_date/data/database.dart';
 import 'package:expiration_date/homepage.dart';
+import 'package:expiration_date/listpage.dart';
 import 'package:expiration_date/service/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -78,7 +79,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      home: const HomePage(),
+      home: const ListPage(),
     );
   }
 }
