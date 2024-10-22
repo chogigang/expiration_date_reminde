@@ -71,7 +71,7 @@ class _UpdateFoodItemState extends State<UpdateFoodItem> {
     }
   }
 
-  Future<void> _startCameraPreview(BuildContext context) async {
+  Future<void> startCameraPreview(BuildContext context) async {
     await _cameraService.startCameraPreview(context,
         (Uint8List? imageData, String? formattedDate) {
       setState(() {
@@ -108,7 +108,7 @@ class _UpdateFoodItemState extends State<UpdateFoodItem> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () => _startCameraPreview(context),
+                onPressed: () => startCameraPreview(context),
                 child: const Text('사진 변경'),
               ),
               TextFormField(

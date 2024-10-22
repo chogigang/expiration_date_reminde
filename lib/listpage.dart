@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:expiration_date/data/database.dart';
 import 'package:expiration_date/detailpage.dart';
-import 'package:expiration_date/writepage.dart'; // WritePage import
+import 'package:expiration_date/writepage.dart';
 import 'dart:math';
 
 class ListPage extends StatefulWidget {
@@ -82,7 +82,7 @@ class _ListPageState extends State<ListPage> {
         );
       },
     );
-    _loadFoodItems(); // 리스트 새로고침
+    await _loadFoodItems(); // 리스트 새로고침
   }
 
   @override
@@ -223,9 +223,7 @@ class _ListPageState extends State<ListPage> {
                           );
                           if (confirmDelete == true) {
                             await MyDatabase().deleteFooddb(foodItem);
-                            setState(() {
-                              _foodItems.remove(foodItem); // 삭제 후 목록 갱신
-                            });
+                            await _loadFoodItems(); // 삭제 후 리스트 새로고침
                           }
                         },
                       ),
@@ -247,7 +245,7 @@ class _ListPageState extends State<ListPage> {
             MaterialPageRoute(
               builder: (context) => const WritePage(),
             ),
-          );
+          ).then((_) => _loadFoodItems()); // WritePage에서 돌아오면 리스트 새로고침
         },
         child: const Icon(Icons.add),
       ),

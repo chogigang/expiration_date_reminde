@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:expiration_date/service/cameraservice.dart';
 import 'package:drift/drift.dart' as drift;
-import 'package:flutter_gemini/flutter_gemini.dart'; // Gemini 패키지 추가
+import 'package:flutter_gemini/flutter_gemini.dart';
 
 class WritePage extends StatefulWidget {
   const WritePage({Key? key}) : super(key: key);
@@ -19,8 +19,8 @@ class _WritePageState extends State<WritePage> {
   final expiryDateController = TextEditingController();
   final alarmCycleController = TextEditingController();
   final typeController = TextEditingController();
-  String imageUrl = ''; // 이미지 url
-  Uint8List? imageData; // 사진 찍기에서 찍은 이미지 바이너리 데이터
+  String imageUrl = '';
+  Uint8List? imageData;
 
   final CameraService _cameraService = CameraService();
 
@@ -28,7 +28,7 @@ class _WritePageState extends State<WritePage> {
   void initState() {
     super.initState();
     _cameraService.initCamera().then((_) {
-      setState(() {}); // 카메라 초기화 후 상태 갱신
+      setState(() {});
     });
   }
 
@@ -42,9 +42,7 @@ class _WritePageState extends State<WritePage> {
     await _cameraService.startCameraPreview(context, (imageData, date) {
       setState(() {
         this.imageData = imageData;
-        imageUrl = ''; // 사진 찍기에서 찍은 이미지가 있을 때, 이미지 URL 초기화
-
-        // Gemini API를 호출하여 이미지에서 음식 이름을 인식
+        imageUrl = '';
         getFoodNameFromGemini(imageData!);
       });
     });
@@ -58,26 +56,41 @@ class _WritePageState extends State<WritePage> {
     });
   }
 
+  Future<void> _selectExpiryDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        expiryDateController.text =
+            pickedDate.toLocal().toIso8601String().split('T')[0];
+      });
+    }
+  }
+
   void updateImageUrl(String url) {
     setState(() {
       imageUrl = url;
-      imageData = null; // 이미지 URL이 업데이트되면, 이미지 바이너리 데이터 초기화
+      imageData = null;
     });
   }
 
-  // Gemini API를 사용하여 이미지에서 음식 이름을 가져오는 메서드 추가
   Future<void> getFoodNameFromGemini(Uint8List imageData) async {
     try {
       final gemini = Gemini.instance;
       final response = await gemini.textAndImage(
-        text: "이 음식의 이름이 무엇인지, 단답형으로, 한글로 이름만 딱 말해줘", // 텍스트 프롬프트 (선택 사항)
+        text: "이 음식의 이름이 무엇인지, 단답형으로, 한글로 이름만 딱 말해줘",
         images: [imageData],
       );
       String? foodName = response?.content?.parts?.last.text;
 
       if (foodName != null) {
         setState(() {
-          productNameController.text = foodName; // 인식된 음식 이름 설정
+          productNameController.text = foodName;
         });
       }
     } catch (e) {
@@ -90,7 +103,6 @@ class _WritePageState extends State<WritePage> {
     return Card(
       child: Stack(
         children: <Widget>[
-          // 원형 이미지 표시 (이미지 URL이 있으면 사용하고, 없으면 바이너리 데이터를 사용)
           Align(
             alignment: Alignment(0, -0.6),
             child: Stack(
@@ -114,7 +126,6 @@ class _WritePageState extends State<WritePage> {
                             : null,
                   ),
                 ),
-                // 바코드 스캐너를 위한 버튼
                 Positioned(
                   right: 10,
                   bottom: 10,
@@ -149,7 +160,6 @@ class _WritePageState extends State<WritePage> {
               ],
             ),
           ),
-          // 식품이름 입력 필드와 사진 아이콘 버튼
           Align(
             alignment: const Alignment(0, 0.65),
             child: Column(
@@ -171,18 +181,14 @@ class _WritePageState extends State<WritePage> {
                       IconButton(
                         icon: const Icon(Icons.camera_alt),
                         onPressed: () async {
-                          // 사진 찍기 기능 시작
                           await _startCameraPreview(context);
                         },
                       ),
                     ],
                   ),
                 ),
-                // 종류 입력 필드
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: 5,
-                  ),
+                  padding: const EdgeInsets.only(top: 5),
                   child: TextField(
                     controller: typeController,
                     decoration: const InputDecoration(
@@ -191,20 +197,19 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                 ),
-                // 유통기한 입력 필드와 카메라 버튼
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: 5,
-                  ),
+                  padding: const EdgeInsets.only(top: 5),
                   child: Row(
                     children: [
                       Expanded(
                         child: TextField(
                           controller: expiryDateController,
+                          readOnly: true,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: '유통기한',
                           ),
+                          onTap: () => _selectExpiryDate(context),
                         ),
                       ),
                       IconButton(
@@ -214,11 +219,8 @@ class _WritePageState extends State<WritePage> {
                     ],
                   ),
                 ),
-                // 알람 주기 입력 필드
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: 5,
-                  ),
+                  padding: const EdgeInsets.only(top: 5),
                   child: TextField(
                     controller: alarmCycleController,
                     decoration: const InputDecoration(
@@ -227,7 +229,6 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                 ),
-                // 등록하기 버튼
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, right: 0),
                   child: ElevatedButton(
@@ -244,33 +245,15 @@ class _WritePageState extends State<WritePage> {
                         expiry_date: DateTime.parse(expiryDate),
                         alarm_cycle: drift.Value(alarmCycleInt),
                         type: type,
-                        image_data: drift.Value(imageData), // 이미지 바이너리 데이터 추가
-                        image_url: drift.Value(imageUrl), // 이미지 URL 추가
+                        image_data: drift.Value(imageData),
+                        image_url: drift.Value(imageUrl),
                       );
                       int id = await db.addFooddb(newFood);
 
                       if (id > 0) {
-                        // 데이터가 성공적으로 추가되었는지 확인
                         print('항목이 성공적으로 추가되었습니다. ID: $id');
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('알림'),
-                              content: const Text('항목이 성공적으로 추가되었습니다.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('확인'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        Navigator.of(context).pop(true);
                       } else {
-                        // 데이터 추가 실패
                         print('항목 추가에 실패했습니다.');
                       }
 
@@ -279,8 +262,8 @@ class _WritePageState extends State<WritePage> {
                       alarmCycleController.clear();
                       typeController.clear();
                       setState(() {
-                        imageData = null; // 추가 후 이미지 바이너리 데이터 초기화
-                        imageUrl = ''; // 추가 후 이미지 URL 초기화
+                        imageData = null;
+                        imageUrl = '';
                       });
                     },
                     child: const Text("등록하기"),
