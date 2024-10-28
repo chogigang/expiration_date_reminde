@@ -59,11 +59,15 @@ class _ListPageState extends State<ListPage> {
 
     if (remainingDays <= 7) {
       return Colors.red;
-    } else if (remainingDays <= 14) {
+    } else if (remainingDays > 7 && remainingDays <= 14) {
       return Colors.orange;
-    } else {
+    } else if (remainingDays > 14) {
       return Colors.green;
     }
+
+    // 만약 이 함수가 모든 경우에 대해 반환값이 필요하다면
+    // 기본 색상을 추가하는 것도 고려해볼 수 있습니다.
+    return Colors.grey; // 기본 색상
   }
 
   void _showDetailBottomSheet(BuildContext context, FooddbData foodItem) async {
@@ -186,7 +190,12 @@ class _ListPageState extends State<ListPage> {
                                   backgroundColor: Colors.deepPurple,
                                   child: Text(foodItem.name[0].toUpperCase()),
                                 ),
-                      title: Text(foodItem.name),
+                      title: Text(
+                        foodItem.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold, // 글자를 굵게 설정
+                        ),
+                      ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

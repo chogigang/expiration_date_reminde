@@ -30,6 +30,15 @@ class _WritePageState extends State<WritePage> {
     _cameraService.initCamera().then((_) {
       setState(() {});
     });
+
+    // 제품 이름이 변경될 때마다 종류를 가져오도록 리스너 추가
+    productNameController.addListener(() {
+      if (productNameController.text.isNotEmpty) {
+        getFoodTypeFromGemini(productNameController.text);
+      } else {
+        typeController.clear(); // 비어있으면 종류 입력란도 비우기
+      }
+    });
   }
 
   @override
@@ -95,6 +104,29 @@ class _WritePageState extends State<WritePage> {
       }
     } catch (e) {
       print('Error during food recognition: $e');
+    }
+  }
+
+  Future<void> getFoodTypeFromGemini(String foodName) async {
+    try {
+      final gemini = Gemini.instance;
+      final response = await gemini.textAndImage(
+        text:
+            "이 식품 '$foodName'의 종류가 무엇인지 단답형으로 대답해. 예를 들어 양파는 야채, 우유는 유제품이 되겠지?",
+        images: [],
+      );
+
+      // 응답 로그 추가
+      print('Gemini API Response: ${response?.content?.parts?.last.text}');
+
+      String? foodType = response?.content?.parts?.last.text;
+      if (foodType != null) {
+        setState(() {
+          typeController.text = foodType; // 인식된 종류 설정
+        });
+      }
+    } catch (e) {
+      print('Error during food type recognition: $e');
     }
   }
 
