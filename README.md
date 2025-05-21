@@ -23,6 +23,10 @@ sqlite3_flutter_libs: ^0.5.21
 3월 25일 카카오 로그인
 3월 26일 바코드 스캔 
 
+https://aistudio.google.com/app/apikey 
+재미나이 api 
+
+
 
 
 
